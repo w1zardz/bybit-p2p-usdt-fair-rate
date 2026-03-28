@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDT Fair Rate — Справедливый курс USDT/RUB</title>
-    <meta name="description" content="Справедливый курс USDT к рублю на основе данных ЦБ РФ и CoinGecko. Проверь, насколько P2P-оффер отклоняется от реального курса.">
+    <title>USDT Fair Rate — Лучший курс продажи USDT на Сбербанк</title>
+    <meta name="description" content="Лучший курс продажи USDT за рубли на Сбербанк. Реальные P2P-офферы Bybit vs справедливый курс ЦБ РФ.">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -16,20 +16,15 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            padding: 40px 16px;
+            padding: 32px 16px;
         }
 
-        h1 {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 8px;
-            text-align: center;
-        }
+        h1 { font-size: 26px; font-weight: 700; text-align: center; }
 
         .subtitle {
             color: #8b949e;
             font-size: 14px;
-            margin-bottom: 32px;
+            margin: 6px 0 28px;
             text-align: center;
         }
 
@@ -39,162 +34,185 @@
             border-radius: 12px;
             padding: 24px;
             width: 100%;
-            max-width: 480px;
+            max-width: 520px;
             margin-bottom: 16px;
         }
 
-        .fair-rate {
-            text-align: center;
-        }
-
-        .fair-rate .label {
-            font-size: 13px;
+        .card h2 {
+            font-size: 14px;
             color: #8b949e;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin-bottom: 8px;
+            margin-bottom: 16px;
         }
 
-        .fair-rate .value {
-            font-size: 48px;
+        /* Best offer card */
+        .best-offer { text-align: center; }
+
+        .best-price {
+            font-size: 56px;
             font-weight: 700;
-            color: #58a6ff;
+            color: #3fb950;
+            line-height: 1;
         }
 
-        .fair-rate .currency {
+        .best-currency {
             font-size: 18px;
             color: #8b949e;
             margin-left: 4px;
         }
 
-        .sources {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        .source-item {
-            background: #0d1117;
-            border-radius: 8px;
-            padding: 12px;
-        }
-
-        .source-item .source-label {
-            font-size: 11px;
+        .best-meta {
+            margin-top: 12px;
+            font-size: 14px;
             color: #8b949e;
-            margin-bottom: 4px;
         }
 
-        .source-item .source-value {
-            font-size: 18px;
+        .best-meta strong { color: #e6edf3; }
+
+        .best-deviation {
+            display: inline-block;
+            margin-top: 10px;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
             font-weight: 600;
         }
 
-        .check-section h2 {
-            font-size: 16px;
-            margin-bottom: 16px;
-            color: #e6edf3;
-        }
+        .dev-good { background: #0d2818; color: #3fb950; }
+        .dev-ok { background: #0d2818; color: #56d364; }
+        .dev-weak { background: #2a1f00; color: #d29922; }
+        .dev-bad { background: #2d0a0a; color: #f85149; }
 
-        .input-row {
+        /* Fair rate row */
+        .fair-row {
             display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 16px;
         }
 
-        .input-row input {
-            flex: 1;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            padding: 12px 16px;
-            color: #e6edf3;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
+        .fair-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #58a6ff;
         }
 
-        .input-row input:focus {
-            border-color: #58a6ff;
+        .fair-sub {
+            font-size: 13px;
+            color: #8b949e;
         }
 
-        .input-row input::placeholder {
+        .fair-sources {
+            display: flex;
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .fair-sources span {
+            font-size: 12px;
             color: #484f58;
         }
 
-        .result {
-            border-radius: 8px;
-            padding: 16px;
-            text-align: center;
-            display: none;
+        /* Offers table */
+        .offers-table {
+            width: 100%;
+            border-collapse: collapse;
         }
 
-        .result.show { display: block; }
-
-        .result .deviation {
-            font-size: 32px;
-            font-weight: 700;
-            margin-bottom: 4px;
+        .offers-table th {
+            text-align: left;
+            font-size: 11px;
+            color: #484f58;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 0 0 10px;
+            border-bottom: 1px solid #21262d;
         }
 
-        .result .verdict {
-            font-size: 16px;
+        .offers-table th:last-child,
+        .offers-table td:last-child { text-align: right; }
+
+        .offers-table td {
+            padding: 10px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #21262d;
+            vertical-align: middle;
+        }
+
+        .offers-table tr:last-child td { border-bottom: none; }
+
+        .offer-price {
             font-weight: 600;
+            font-size: 16px;
         }
 
-        .result .detail {
-            font-size: 13px;
-            color: #8b949e;
-            margin-top: 8px;
+        .offer-nick {
+            max-width: 120px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
         }
 
-        .result.excellent { background: #0d2818; }
-        .result.excellent .deviation, .result.excellent .verdict { color: #3fb950; }
-
-        .result.ok { background: #0d2818; }
-        .result.ok .deviation, .result.ok .verdict { color: #56d364; }
-
-        .result.weak { background: #2a1f00; }
-        .result.weak .deviation, .result.weak .verdict { color: #d29922; }
-
-        .result.trash { background: #2d0a0a; }
-        .result.trash .deviation, .result.trash .verdict { color: #f85149; }
-
-        .ranges {
-            margin-top: 16px;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 8px;
-        }
-
-        .range-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
+        .offer-stats {
             font-size: 12px;
             color: #8b949e;
         }
 
-        .range-dot {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            flex-shrink: 0;
+        .offer-rate {
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: 600;
         }
 
-        .range-dot.excellent { background: #3fb950; }
-        .range-dot.ok { background: #56d364; }
-        .range-dot.weak { background: #d29922; }
-        .range-dot.trash { background: #f85149; }
+        .rate-high { background: #0d2818; color: #3fb950; }
+        .rate-mid { background: #1a1f00; color: #a5d64e; }
+        .rate-low { background: #2a1f00; color: #d29922; }
 
+        .offer-limit {
+            font-size: 12px;
+            color: #484f58;
+        }
+
+        .badge-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .badge {
+            font-size: 10px;
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .badge-top { background: #3fb950; color: #0d1117; }
+
+        /* Loading / error */
         .loading {
             text-align: center;
             color: #8b949e;
             padding: 40px;
         }
 
-        .error {
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #30363d;
+            border-top-color: #58a6ff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin { to { transform: rotate(360deg); } }
+
+        .error-msg {
             color: #f85149;
             text-align: center;
             padding: 16px;
@@ -205,7 +223,7 @@
             text-align: center;
             font-size: 12px;
             color: #484f58;
-            margin-top: 8px;
+            margin-top: 4px;
         }
 
         .refresh-btn {
@@ -213,174 +231,248 @@
             border: 1px solid #30363d;
             color: #8b949e;
             border-radius: 6px;
-            padding: 6px 12px;
+            padding: 4px 10px;
             font-size: 12px;
             cursor: pointer;
             margin-left: 8px;
-            transition: border-color 0.2s, color 0.2s;
+            transition: all 0.2s;
         }
 
-        .refresh-btn:hover {
-            border-color: #58a6ff;
-            color: #58a6ff;
-        }
+        .refresh-btn:hover { border-color: #58a6ff; color: #58a6ff; }
 
         footer {
             margin-top: auto;
-            padding-top: 40px;
+            padding-top: 32px;
             text-align: center;
+            font-size: 11px;
+            color: #484f58;
+            line-height: 1.6;
+        }
+
+        footer a { color: #58a6ff; text-decoration: none; }
+
+        .note {
             font-size: 12px;
             color: #484f58;
+            text-align: center;
+            margin-top: 8px;
+            line-height: 1.5;
         }
 
-        footer a {
-            color: #58a6ff;
-            text-decoration: none;
-        }
-
-        @media (max-width: 400px) {
-            .fair-rate .value { font-size: 36px; }
-            .sources { grid-template-columns: 1fr; }
+        @media (max-width: 420px) {
+            .best-price { font-size: 40px; }
+            .fair-value { font-size: 22px; }
+            .offers-table { font-size: 13px; }
         }
     </style>
 </head>
 <body>
     <h1>USDT Fair Rate</h1>
-    <p class="subtitle">Справедливый курс USDT/RUB для P2P-продажи</p>
+    <p class="subtitle">Продажа USDT &rarr; Сбербанк (RUB)</p>
 
-    <div class="card fair-rate" id="main-card">
-        <div class="loading" id="loading">Загрузка курсов...</div>
-        <div id="rate-content" style="display:none">
-            <div class="label">Справедливый курс</div>
-            <div>
-                <span class="value" id="fair-rate">—</span>
-                <span class="currency">₽ / USDT</span>
+    <!-- Best offer -->
+    <div class="card best-offer" id="best-card">
+        <div class="loading" id="loading"><span class="spinner"></span>Загрузка офферов Bybit...</div>
+        <div id="best-content" style="display:none">
+            <h2>Лучший оффер на Сбер</h2>
+            <div class="best-price" id="best-price">—</div>
+            <span class="best-currency">₽ за 1 USDT</span>
+            <div class="best-meta">
+                <strong id="best-nick">—</strong> &middot;
+                <span id="best-orders">—</span> сделок &middot;
+                <span id="best-completion">—</span>% завершено
             </div>
-            <div class="sources">
-                <div class="source-item">
-                    <div class="source-label">USD/RUB (ЦБ РФ)</div>
-                    <div class="source-value" id="cbr-rate">—</div>
-                </div>
-                <div class="source-item">
-                    <div class="source-label">USDT/USD (CoinGecko)</div>
-                    <div class="source-value" id="usdt-price">—</div>
-                </div>
+            <div class="best-meta">
+                Лимит: <span id="best-limit">—</span> ₽
             </div>
+            <div class="best-deviation" id="best-dev">—</div>
         </div>
-        <div class="error" id="error" style="display:none"></div>
+        <div class="error-msg" id="error" style="display:none"></div>
     </div>
 
-    <div class="card check-section" id="check-card" style="display:none">
-        <h2>Проверь свой оффер</h2>
-        <div class="input-row">
-            <input type="number" id="offer-input" placeholder="Цена оффера, ₽" step="0.01" inputmode="decimal">
+    <!-- Fair rate -->
+    <div class="card" id="fair-card" style="display:none">
+        <h2>Справедливый курс (ЦБ &times; USDT)</h2>
+        <div class="fair-row">
+            <div>
+                <span class="fair-value" id="fair-rate">—</span>
+                <span class="fair-sub"> ₽ / USDT</span>
+            </div>
         </div>
-        <div class="result" id="result">
-            <div class="deviation" id="deviation"></div>
-            <div class="verdict" id="verdict"></div>
-            <div class="detail" id="detail"></div>
+        <div class="fair-sources">
+            <span>USD/RUB ЦБ: <strong id="cbr-rate">—</strong></span>
+            <span>USDT/USD: <strong id="usdt-price">—</strong></span>
         </div>
-        <div class="ranges">
-            <div class="range-item"><span class="range-dot excellent"></span> > 0% — отлично</div>
-            <div class="range-item"><span class="range-dot ok"></span> 0…−1.5% — норм</div>
-            <div class="range-item"><span class="range-dot weak"></span> −1.5…−4% — слабо</div>
-            <div class="range-item"><span class="range-dot trash"></span> < −4% — мусор</div>
-        </div>
+    </div>
+
+    <!-- Top offers -->
+    <div class="card" id="offers-card" style="display:none">
+        <h2>Топ-10 офферов на Сбербанк</h2>
+        <table class="offers-table">
+            <thead>
+                <tr>
+                    <th>Продавец</th>
+                    <th>Цена</th>
+                    <th>Лимит</th>
+                    <th>Сделки</th>
+                </tr>
+            </thead>
+            <tbody id="offers-body"></tbody>
+        </table>
     </div>
 
     <div class="updated" id="updated"></div>
+    <p class="note">Данные обновляются при загрузке страницы. Офферы отсортированы по лучшей цене для продавца USDT.</p>
 
     <footer>
-        Данные: <a href="https://www.cbr-xml-daily.ru/" target="_blank">ЦБ РФ</a> ×
-        <a href="https://www.coingecko.com/" target="_blank">CoinGecko</a><br>
+        Источники: <a href="https://www.cbr-xml-daily.ru/" target="_blank">ЦБ РФ</a> &middot;
+        <a href="https://www.coingecko.com/" target="_blank">CoinGecko</a> &middot;
+        <a href="https://www.bybit.com/fiat/trade/otc" target="_blank">Bybit P2P</a><br>
         Не является финансовой рекомендацией
     </footer>
 
     <script>
         const $ = id => document.getElementById(id);
 
-        let fairRate = null;
-
         async function fetchCBR() {
-            const res = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
-            const data = await res.json();
-            return data.Valute.USD.Value;
+            const r = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
+            return (await r.json()).Valute.USD.Value;
         }
 
         async function fetchUSDT() {
-            const res = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
-            const data = await res.json();
-            return data.tether.usd;
+            const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
+            return (await r.json()).tether.usd;
         }
 
-        async function loadRates() {
+        async function fetchBybitP2P() {
+            // side=1 = Buy ads: people who want to BUY your USDT and pay you RUB
+            // payment 14 = Сбербанк
+            // Sorted by best price for seller (highest first by default from Bybit)
+            const r = await fetch('https://api2.bybit.com/fiat/otc/item/online', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    tokenId: 'USDT',
+                    currencyId: 'RUB',
+                    payment: ['14'],
+                    side: '1',
+                    size: '10',
+                    page: '1',
+                    amount: ''
+                })
+            });
+            const data = await r.json();
+            if (data.ret_code !== 0) throw new Error(data.ret_msg);
+
+            // Sort by price descending (best for seller = highest price)
+            const items = data.result.items || [];
+            items.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            return items;
+        }
+
+        function devClass(pct) {
+            if (pct > 0) return 'dev-good';
+            if (pct >= -1.5) return 'dev-ok';
+            if (pct >= -4) return 'dev-weak';
+            return 'dev-bad';
+        }
+
+        function rateClass(pct) {
+            if (pct >= 98) return 'rate-high';
+            if (pct >= 95) return 'rate-mid';
+            return 'rate-low';
+        }
+
+        function fmtNum(n) {
+            return Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 });
+        }
+
+        async function load() {
             $('loading').style.display = 'block';
-            $('rate-content').style.display = 'none';
+            $('best-content').style.display = 'none';
             $('error').style.display = 'none';
-            $('check-card').style.display = 'none';
+            $('fair-card').style.display = 'none';
+            $('offers-card').style.display = 'none';
 
             try {
-                const [usdRub, usdtUsd] = await Promise.all([fetchCBR(), fetchUSDT()]);
+                const [usdRub, usdtUsd, offers] = await Promise.all([
+                    fetchCBR(), fetchUSDT(), fetchBybitP2P()
+                ]);
 
-                fairRate = usdRub * usdtUsd;
+                const fairRate = usdRub * usdtUsd;
 
+                // Fair rate card
+                $('fair-rate').textContent = fairRate.toFixed(2);
                 $('cbr-rate').textContent = usdRub.toFixed(4);
                 $('usdt-price').textContent = '$' + usdtUsd.toFixed(4);
-                $('fair-rate').textContent = fairRate.toFixed(2);
+                $('fair-card').style.display = 'block';
+
+                if (offers.length === 0) {
+                    $('loading').style.display = 'none';
+                    $('error').style.display = 'block';
+                    $('error').textContent = 'Нет офферов на Сбербанк. Попробуйте позже.';
+                    return;
+                }
+
+                // Best offer
+                const best = offers[0];
+                const bestPrice = parseFloat(best.price);
+                const bestDiff = ((bestPrice - fairRate) / fairRate) * 100;
+                const bestCompletion = best.orderNum > 0
+                    ? (best.finishNum / best.orderNum * 100).toFixed(1) : '0';
+
+                $('best-price').textContent = bestPrice.toFixed(2);
+                $('best-nick').textContent = best.nickName;
+                $('best-orders').textContent = fmtNum(best.finishNum);
+                $('best-completion').textContent = bestCompletion;
+                $('best-limit').textContent = fmtNum(best.minAmount) + ' — ' + fmtNum(best.maxAmount);
+                $('best-dev').textContent = (bestDiff >= 0 ? '+' : '') + bestDiff.toFixed(2) + '% от fair';
+                $('best-dev').className = 'best-deviation ' + devClass(bestDiff);
 
                 $('loading').style.display = 'none';
-                $('rate-content').style.display = 'block';
-                $('check-card').style.display = 'block';
+                $('best-content').style.display = 'block';
 
-                const now = new Date();
-                $('updated').textContent = 'Обновлено: ' + now.toLocaleTimeString('ru-RU');
+                // Offers table
+                const tbody = $('offers-body');
+                tbody.innerHTML = '';
+                offers.forEach((o, i) => {
+                    const price = parseFloat(o.price);
+                    const diff = ((price - fairRate) / fairRate) * 100;
+                    const comp = o.orderNum > 0 ? (o.finishNum / o.orderNum * 100).toFixed(1) : '0';
 
-                // Re-evaluate if there was input
-                evaluateOffer();
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>
+                            <div class="badge-row">
+                                ${i === 0 ? '<span class="badge badge-top">BEST</span>' : ''}
+                                <span class="offer-nick">${o.nickName}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <div class="offer-price">${price.toFixed(2)} ₽</div>
+                            <div class="offer-stats">${(diff >= 0 ? '+' : '') + diff.toFixed(2)}%</div>
+                        </td>
+                        <td class="offer-limit">${fmtNum(o.minAmount)}–${fmtNum(o.maxAmount)} ₽</td>
+                        <td>
+                            <span class="offer-rate ${rateClass(parseFloat(comp))}">${comp}%</span>
+                            <div class="offer-stats">${fmtNum(o.finishNum)} шт</div>
+                        </td>
+                    `;
+                    tbody.appendChild(tr);
+                });
+                $('offers-card').style.display = 'block';
+
+                $('updated').innerHTML = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU') +
+                    ' <button class="refresh-btn" onclick="load()">Обновить</button>';
+
             } catch (e) {
                 $('loading').style.display = 'none';
                 $('error').style.display = 'block';
-                $('error').textContent = 'Ошибка загрузки: ' + e.message;
+                $('error').textContent = 'Ошибка: ' + e.message;
             }
         }
 
-        function evaluateOffer() {
-            const input = $('offer-input');
-            const result = $('result');
-            const val = parseFloat(input.value);
-
-            if (!val || !fairRate) {
-                result.classList.remove('show');
-                return;
-            }
-
-            const diff = val - fairRate;
-            const pct = (diff / fairRate) * 100;
-
-            let cls, verdict;
-            if (pct > 0) {
-                cls = 'excellent';
-                verdict = 'Отлично — выше справедливого курса';
-            } else if (pct >= -1.5) {
-                cls = 'ok';
-                verdict = 'Норм — стандартный дисконт';
-            } else if (pct >= -4) {
-                cls = 'weak';
-                verdict = 'Слабо — ниже рынка';
-            } else {
-                cls = 'trash';
-                verdict = 'Мусор — не связывайся';
-            }
-
-            result.className = 'result show ' + cls;
-            $('deviation').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-            $('verdict').textContent = verdict;
-            $('detail').textContent = val.toFixed(2) + ' ₽ vs ' + fairRate.toFixed(2) + ' ₽ fair (' + (diff >= 0 ? '+' : '') + diff.toFixed(2) + ' ₽)';
-        }
-
-        $('offer-input').addEventListener('input', evaluateOffer);
-
-        loadRates();
+        load();
     </script>
 </body>
 </html>
