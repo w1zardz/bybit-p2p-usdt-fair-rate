@@ -493,15 +493,42 @@
             return (await proxiedGet('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd')).tether.usd;
         }
 
-        async function fetchBybitP2P() {
-            const data = await proxiedPost('https://api2.bybit.com/fiat/otc/item/online', {
-                tokenId: 'USDT', currencyId: 'RUB', payment: ['14'],
-                side: '1', size: '20', page: '1', amount: ''
-            });
-            if (data.ret_code !== 0) throw new Error(data.ret_msg);
-            const items = data.result.items || [];
-            items.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-            return items;
+        async function fetchBybitP2P(fairRate) {
+            // side=0 = merchants BUYING USDT from you (you sell, get RUB)
+            // API sorts highest price first (dirty money at top).
+            // We load multiple pages to find the clean zone (around fair rate and below).
+            const allItems = [];
+            const seen = new Set();
+
+            for (let page = 1; page <= 120; page++) {
+                const data = await proxiedPost('https://api2.bybit.com/fiat/otc/item/online', {
+                    tokenId: 'USDT', currencyId: 'RUB', payment: ['14'],
+                    side: '0', size: '20', page: String(page), amount: ''
+                });
+                if (data.ret_code !== 0) break;
+                const items = data.result.items || [];
+                if (items.length === 0) break;
+
+                for (const item of items) {
+                    const price = parseFloat(item.price);
+                    // Skip if too far below fair (< 95%)
+                    if (fairRate && price < fairRate * 0.95) {
+                        return allItems; // We've gone too low, stop
+                    }
+                    if (!seen.has(item.id)) {
+                        seen.add(item.id);
+                        allItems.push(item);
+                    }
+                }
+
+                // If lowest price on this page is below our target, stop
+                const minPrice = Math.min(...items.map(i => parseFloat(i.price)));
+                if (fairRate && minPrice < fairRate * 0.95) break;
+            }
+
+            // Sort: best for seller = highest price first
+            allItems.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            return allItems;
         }
 
         function profileUrl(o) {
@@ -513,11 +540,9 @@
         }
 
         // Is the offer suspicious? (dirty money risk)
-        // Reality: Bybit P2P lowest offers are ~80.50 at fair ~81.
-        // Truly clean off-exchange rate is ~79 (96-98% of fair).
-        // On Bybit, offers above fair rate = definitely dirty.
-        // Offers at fair ± 0.5% = high risk (too close to fair for P2P).
-        // Offers below -0.5% from fair = normal Bybit P2P market.
+        // side=0 gives BUYERS sorted high→low. Top = 93+ (dirty casino/processing).
+        // Clean rate confirmed by traders: 96-98% of fair (~79₽ at fair 81).
+        // Above fair = definitely dirty. Above 98% of fair = very likely dirty.
         function isDirty(o, fairRate) {
             const price = parseFloat(o.price);
             const pct = ((price - fairRate) / fairRate) * 100;
@@ -526,10 +551,12 @@
 
             // Above fair rate = definitely dirty
             if (pct > 0) return true;
-            // Very low completion = unreliable regardless of price
+            // Above 98% of fair = very likely dirty (only 2% spread)
+            if (pct > -2) return true;
+            // Very low completion = unreliable
             if (comp < 85) return true;
-            // Few deals + close to fair = suspicious
-            if (finished < 30 && pct > -0.5) return true;
+            // Few deals + close to fair
+            if (finished < 30 && pct > -3) return true;
 
             return false;
         }
@@ -546,17 +573,16 @@
             return minOrdersRequired(o) <= 5;
         }
 
-        // Is the offer "safe" for Bybit? (best available, not the off-exchange ideal)
+        // Is the offer safe? Price in clean zone (96-98% of fair), good reputation
         function isSafe(o, fairRate) {
             const price = parseFloat(o.price);
             const pct = ((price - fairRate) / fairRate) * 100;
             const comp = completionRate(o) * 100;
             const finished = parseInt(o.finishNum) || 0;
 
-            // Must be accessible (no crazy min order requirements)
             if (!isAccessible(o)) return false;
-            // Good completion, decent history, price not above fair
-            return comp >= 95 && finished >= 50 && pct <= 0;
+            // Clean zone: 2-5% below fair, good completion, decent history
+            return pct <= -2 && pct >= -5 && comp >= 95 && finished >= 50;
         }
 
         function trustScore(o) {
@@ -598,9 +624,9 @@
 
         function devClass(pct) {
             if (pct > 0) return 'dev-bad';     // above fair = dirty
-            if (pct > -0.3) return 'dev-weak'; // very close to fair = risky
-            if (pct >= -1) return 'dev-ok';    // normal Bybit P2P
-            return 'dev-good';                 // below -1% = good deal
+            if (pct > -2) return 'dev-weak';   // 0 to -2% = dirty zone
+            if (pct >= -5) return 'dev-good';  // -2 to -5% = clean zone
+            return 'dev-ok';                   // below -5% = low but clean
         }
 
         function rateClass(pct) {
@@ -623,22 +649,23 @@
             $('dirty-card').style.display = 'none';
 
             try {
-                const [usdRub, usdtUsd, offers] = await Promise.all([
-                    fetchCBR(), fetchUSDT(), fetchBybitP2P()
-                ]);
-
+                const [usdRub, usdtUsd] = await Promise.all([fetchCBR(), fetchUSDT()]);
                 const fairRate = usdRub * usdtUsd;
+
+                $('loading').innerHTML = '<span class="spinner"></span>Загрузка офферов Bybit (ищем чистые)...';
+                const offers = await fetchBybitP2P(fairRate);
 
                 // Fair rate card + safe range
                 $('fair-rate').textContent = fairRate.toFixed(2);
                 $('cbr-rate').textContent = usdRub.toFixed(4);
                 $('usdt-price').textContent = '$' + usdtUsd.toFixed(4);
 
-                const idealRate = (fairRate * 0.975).toFixed(2);
+                const cleanHigh = (fairRate * 0.98).toFixed(2);
+                const cleanLow = (fairRate * 0.95).toFixed(2);
                 $('safe-range').innerHTML =
-                    'Идеальный курс (вне биржи, личные контакты): <strong>~' + idealRate + ' ₽</strong> (96&ndash;98% от fair)<br>' +
-                    'Bybit P2P реально: <strong>' + (fairRate * 0.993).toFixed(2) + ' &mdash; ' + fairRate.toFixed(2) + ' ₽</strong><br>' +
-                    'Выше ' + fairRate.toFixed(2) + ' ₽ &mdash; <span class="danger">точно грязные деньги</span>';
+                    'Чистая зона: <strong>' + cleanLow + ' &mdash; ' + cleanHigh + ' ₽</strong> (95&ndash;98% от fair)<br>' +
+                    'Выше ' + cleanHigh + ' ₽ &mdash; <span class="danger">риск грязных денег (казино, процессинг)</span><br>' +
+                    'Ниже ' + cleanLow + ' ₽ &mdash; слишком низко, невыгодно';
 
                 $('fair-card').style.display = 'block';
 
