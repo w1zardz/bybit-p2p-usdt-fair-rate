@@ -4,7 +4,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>USDT Fair Rate — Лучший курс продажи USDT на Сбербанк</title>
-    <meta name="description" content="Лучший курс продажи USDT за рубли на Сбербанк. Реальные P2P-офферы Bybit vs справедливый курс ЦБ РФ. Проверка на грязные деньги.">
+    <meta name="description" content="Справедливый курс USDT к рублю — мониторинг P2P офферов Bybit с фильтром грязных денег. Продать USDT на Сбербанк по честному курсу. Обмен USDT на рубли безопасно.">
+    <meta name="keywords" content="курс USDT, USDT рубль, P2P Bybit, продать USDT, обмен USDT на рубли, справедливый курс USDT, USDT Сбербанк, грязные деньги P2P, безопасный обмен USDT, USDT RUB, курс USDT сегодня, Bybit P2P обмен">
+    <meta name="author" content="w1zardz">
+    <link rel="canonical" href="https://w1zardz.github.io/bybit-p2p-usdt-fair-rate/">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="USDT Fair Rate — Справедливый курс USDT/RUB на Bybit P2P">
+    <meta property="og:description" content="Мониторинг P2P офферов Bybit: справедливый курс USDT к рублю, фильтр грязных денег, рейтинг доверия продавцов. Продать USDT на Сбербанк безопасно.">
+    <meta property="og:url" content="https://w1zardz.github.io/bybit-p2p-usdt-fair-rate/">
+    <meta property="og:locale" content="ru_RU">
+    <meta property="og:site_name" content="USDT Fair Rate">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:title" content="USDT Fair Rate — Справедливый курс USDT/RUB">
+    <meta name="twitter:description" content="Мониторинг P2P офферов Bybit с фильтром грязных денег. Продать USDT на Сбербанк по честному курсу.">
+
+    <!-- Structured Data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "USDT Fair Rate",
+        "alternateName": "Справедливый курс USDT",
+        "description": "Мониторинг P2P офферов Bybit: справедливый курс USDT к рублю с фильтром грязных денег. Обмен USDT на рубли через Сбербанк безопасно.",
+        "url": "https://w1zardz.github.io/bybit-p2p-usdt-fair-rate/",
+        "applicationCategory": "FinanceApplication",
+        "operatingSystem": "Web",
+        "offers": {
+            "@type": "Offer",
+            "price": "0",
+            "priceCurrency": "USD"
+        },
+        "inLanguage": "ru",
+        "keywords": "курс USDT, USDT рубль, P2P Bybit, продать USDT, обмен USDT на рубли, справедливый курс USDT, USDT Сбербанк, грязные деньги P2P, безопасный обмен USDT"
+    }
+    </script>
+
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -496,11 +534,12 @@
         async function fetchBybitP2P(fairRate) {
             // side=0 = merchants BUYING USDT from you (you sell, get RUB)
             // API sorts highest price first (dirty money at top).
-            // We load multiple pages to find the clean zone (around fair rate and below).
-            const allItems = [];
-            const seen = new Set();
+            // IMPORTANT: merchants have MULTIPLE ads at different prices.
+            // We keep only the LOWEST price per merchant (userId) —
+            // that's the real price you'll actually get, not the inflated one.
+            const byUser = new Map(); // userId → item with lowest price
 
-            for (let page = 1; page <= 120; page++) {
+            for (let page = 1; page <= 150; page++) {
                 const data = await proxiedPost('https://api2.bybit.com/fiat/otc/item/online', {
                     tokenId: 'USDT', currencyId: 'RUB', payment: ['14'],
                     side: '0', size: '20', page: String(page), amount: ''
@@ -511,24 +550,23 @@
 
                 for (const item of items) {
                     const price = parseFloat(item.price);
-                    // Skip if too far below fair (< 95%)
-                    if (fairRate && price < fairRate * 0.95) {
-                        return allItems; // We've gone too low, stop
-                    }
-                    if (!seen.has(item.id)) {
-                        seen.add(item.id);
-                        allItems.push(item);
+                    const uid = item.userId;
+
+                    // Keep lowest price per merchant
+                    if (!byUser.has(uid) || price < parseFloat(byUser.get(uid).price)) {
+                        byUser.set(uid, item);
                     }
                 }
 
-                // If lowest price on this page is below our target, stop
+                // Stop if we've gone below target
                 const minPrice = Math.min(...items.map(i => parseFloat(i.price)));
-                if (fairRate && minPrice < fairRate * 0.95) break;
+                if (fairRate && minPrice < fairRate * 0.93) break;
             }
 
-            // Sort: best for seller = highest price first
-            allItems.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-            return allItems;
+            // Convert to array, sort: highest price first (best for seller)
+            const result = Array.from(byUser.values());
+            result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            return result;
         }
 
         function profileUrl(o) {
