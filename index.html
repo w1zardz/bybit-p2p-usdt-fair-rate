@@ -443,7 +443,8 @@
         }
 
         function adUrl(o) {
-            return 'https://www.bybit.com/fiat/trade/otc/?actionType=1&token=USDT&fiat=RUB&paymentMethod=14';
+            // actionType=0 = Продажа USDT (ты продаёшь, получаешь RUB)
+            return 'https://www.bybit.com/fiat/trade/otc/?actionType=0&token=USDT&fiat=RUB&paymentMethod=14';
         }
 
         function trustScore(o) {
