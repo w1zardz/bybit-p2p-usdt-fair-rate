@@ -334,37 +334,45 @@
     <script>
         const $ = id => document.getElementById(id);
 
+        const PROXY = 'https://corsproxy.io/?url=';
+
+        async function proxiedGet(url) {
+            const r = await fetch(PROXY + encodeURIComponent(url));
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+
+        async function proxiedPost(url, body) {
+            const r = await fetch(PROXY + encodeURIComponent(url), {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+
         async function fetchCBR() {
-            const r = await fetch('https://www.cbr-xml-daily.ru/daily_json.js');
-            return (await r.json()).Valute.USD.Value;
+            const data = await proxiedGet('https://www.cbr-xml-daily.ru/daily_json.js');
+            return data.Valute.USD.Value;
         }
 
         async function fetchUSDT() {
-            const r = await fetch('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
-            return (await r.json()).tether.usd;
+            const data = await proxiedGet('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
+            return data.tether.usd;
         }
 
         async function fetchBybitP2P() {
-            // side=1 = Buy ads: people who want to BUY your USDT and pay you RUB
-            // payment 14 = Сбербанк
-            // Sorted by best price for seller (highest first by default from Bybit)
-            const r = await fetch('https://api2.bybit.com/fiat/otc/item/online', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    tokenId: 'USDT',
-                    currencyId: 'RUB',
-                    payment: ['14'],
-                    side: '1',
-                    size: '10',
-                    page: '1',
-                    amount: ''
-                })
+            const data = await proxiedPost('https://api2.bybit.com/fiat/otc/item/online', {
+                tokenId: 'USDT',
+                currencyId: 'RUB',
+                payment: ['14'],
+                side: '1',
+                size: '10',
+                page: '1',
+                amount: ''
             });
-            const data = await r.json();
             if (data.ret_code !== 0) throw new Error(data.ret_msg);
-
-            // Sort by price descending (best for seller = highest price)
             const items = data.result.items || [];
             items.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
             return items;
