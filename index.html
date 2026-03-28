@@ -534,6 +534,18 @@
             return false;
         }
 
+        // Minimum orders the merchant requires from YOU
+        function minOrdersRequired(o) {
+            const tp = o.tradingPreferenceSet || {};
+            if (tp.hasOrderFinishNumberDay30 === 1) return tp.orderFinishNumberDay30 || 0;
+            return 0;
+        }
+
+        // Can you actually trade with this merchant? (< 5 orders/month)
+        function isAccessible(o) {
+            return minOrdersRequired(o) <= 5;
+        }
+
         // Is the offer "safe" for Bybit? (best available, not the off-exchange ideal)
         function isSafe(o, fairRate) {
             const price = parseFloat(o.price);
@@ -541,6 +553,8 @@
             const comp = completionRate(o) * 100;
             const finished = parseInt(o.finishNum) || 0;
 
+            // Must be accessible (no crazy min order requirements)
+            if (!isAccessible(o)) return false;
             // Good completion, decent history, price not above fair
             return comp >= 95 && finished >= 50 && pct <= 0;
         }
@@ -684,14 +698,26 @@
                     const tl = trustLabel(ts);
                     const url = profileUrl(o);
                     const dirty = isDirty(o, fairRate);
+                    const accessible = isAccessible(o);
+                    const minOrd = minOrdersRequired(o);
 
                     const tr = document.createElement('tr');
                     if (dirty) tr.className = 'row-dirty';
+                    if (!accessible) tr.style.opacity = '0.4';
+
+                    let lockInfo = '';
+                    if (minOrd > 0) {
+                        const color = accessible ? '#8b949e' : '#f85149';
+                        lockInfo = '<div class="offer-stats" style="color:' + color + '">' +
+                            (accessible ? '' : '&#128274; ') + 'мин. ' + minOrd + ' сделок/мес</div>';
+                    }
+
                     tr.innerHTML = `
                         <td>
                             <div class="badge-row">
                                 ${showBest ? '<span class="badge badge-top">BEST</span>' : ''}
                                 ${dirty ? '<span class="badge badge-dirty">&#9888;</span>' : ''}
+                                ${!accessible ? '<span class="badge" style="background:#d29922;color:#0d1117">&#128274;</span>' : ''}
                                 <a class="offer-nick" href="${url}" target="_blank">${o.nickName}</a>
                             </div>
                             <a class="sell-btn" href="${url}" target="_blank">Продать USDT</a>
@@ -704,6 +730,7 @@
                         <td>
                             <div class="offer-limit">${fmtNum(o.minAmount)}–${fmtNum(o.maxAmount)} &#8381;</div>
                             <span class="trust ${tl.cls}">${ts}/100</span>
+                            ${lockInfo}
                         </td>
                         <td>
                             <span class="offer-rate ${rateClass(parseFloat(comp))}">${comp}%</span>
