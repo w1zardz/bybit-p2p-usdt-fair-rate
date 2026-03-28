@@ -275,6 +275,25 @@
         .trust-risky { background: #2a1f00; color: #d29922; }
         .trust-danger { background: #2d0a0a; color: #f85149; }
 
+        .dirty-toggle {
+            cursor: pointer;
+            font-size: 14px;
+            color: #f85149;
+            font-weight: 600;
+            list-style: none;
+            padding: 4px 0;
+        }
+
+        .dirty-toggle::-webkit-details-marker { display: none; }
+
+        .dirty-toggle::before {
+            content: '+ ';
+            font-family: monospace;
+            margin-right: 4px;
+        }
+
+        details[open] .dirty-toggle::before { content: '- '; }
+
         /* Loading / error */
         .loading {
             text-align: center;
@@ -397,9 +416,9 @@
         <div class="safe-range" id="safe-range"></div>
     </div>
 
-    <!-- Top offers -->
-    <div class="card" id="offers-card" style="display:none">
-        <h2>Все офферы на Сбербанк</h2>
+    <!-- Safe offers -->
+    <div class="card" id="safe-card" style="display:none">
+        <h2 id="safe-title">Безопасные офферы</h2>
         <table class="offers-table">
             <thead>
                 <tr>
@@ -409,8 +428,31 @@
                     <th>Сделки</th>
                 </tr>
             </thead>
-            <tbody id="offers-body"></tbody>
+            <tbody id="safe-body"></tbody>
         </table>
+        <div id="no-safe" style="display:none; text-align:center; color:#d29922; padding:16px; font-size:14px;">
+            Безопасных офферов сейчас нет. Все текущие предложения выше порога риска.
+        </div>
+    </div>
+
+    <!-- Dirty offers (collapsed) -->
+    <div class="card" id="dirty-card" style="display:none">
+        <details>
+            <summary class="dirty-toggle">
+                <span id="dirty-count">0</span> подозрительных офферов (возможно грязные деньги)
+            </summary>
+            <table class="offers-table" style="margin-top:12px">
+                <thead>
+                    <tr>
+                        <th>Продавец</th>
+                        <th>Цена</th>
+                        <th>Лимит</th>
+                        <th>Сделки</th>
+                    </tr>
+                </thead>
+                <tbody id="dirty-body"></tbody>
+            </table>
+        </details>
     </div>
 
     <div class="updated" id="updated"></div>
@@ -620,35 +662,30 @@
                 $('loading').style.display = 'none';
                 $('best-content').style.display = 'block';
 
-                // Offers table
-                const tbody = $('offers-body');
-                tbody.innerHTML = '';
-                let safeIdx = 0;
-                offers.forEach((o, i) => {
+                // Split into safe / dirty
+                const safeOffers = [];
+                const dirtyOffers = [];
+                offers.forEach(o => {
+                    if (isDirty(o, fairRate)) dirtyOffers.push(o);
+                    else safeOffers.push(o);
+                });
+
+                function renderRow(o, tbody, showBest) {
                     const price = parseFloat(o.price);
                     const diff = ((price - fairRate) / fairRate) * 100;
                     const comp = (completionRate(o) * 100).toFixed(1);
-                    const dirty = isDirty(o, fairRate);
                     const ts = trustScore(o);
                     const tl = trustLabel(ts);
                     const url = profileUrl(o);
-                    const safe = isSafe(o, fairRate);
-
-                    let badges = '';
-                    if (safe && safeIdx === 0) {
-                        badges += '<span class="badge badge-top">BEST</span>';
-                        safeIdx++;
-                    }
-                    if (dirty) {
-                        badges += '<span class="badge badge-dirty">&#9888;</span>';
-                    }
+                    const dirty = isDirty(o, fairRate);
 
                     const tr = document.createElement('tr');
                     if (dirty) tr.className = 'row-dirty';
                     tr.innerHTML = `
                         <td>
                             <div class="badge-row">
-                                ${badges}
+                                ${showBest ? '<span class="badge badge-top">BEST</span>' : ''}
+                                ${dirty ? '<span class="badge badge-dirty">&#9888;</span>' : ''}
                                 <a class="offer-nick" href="${url}" target="_blank">${o.nickName}</a>
                             </div>
                             <a class="sell-btn" href="${url}" target="_blank">Продать USDT</a>
@@ -668,8 +705,29 @@
                         </td>
                     `;
                     tbody.appendChild(tr);
-                });
-                $('offers-card').style.display = 'block';
+                }
+
+                // Safe table
+                const safeBody = $('safe-body');
+                safeBody.innerHTML = '';
+                if (safeOffers.length > 0) {
+                    safeOffers.forEach((o, i) => renderRow(o, safeBody, i === 0));
+                    $('safe-title').textContent = 'Безопасные офферы (' + safeOffers.length + ')';
+                    $('no-safe').style.display = 'none';
+                } else {
+                    $('safe-title').textContent = 'Безопасные офферы';
+                    $('no-safe').style.display = 'block';
+                }
+                $('safe-card').style.display = 'block';
+
+                // Dirty table (collapsed)
+                if (dirtyOffers.length > 0) {
+                    const dirtyBody = $('dirty-body');
+                    dirtyBody.innerHTML = '';
+                    dirtyOffers.forEach(o => renderRow(o, dirtyBody, false));
+                    $('dirty-count').textContent = dirtyOffers.length;
+                    $('dirty-card').style.display = 'block';
+                }
 
                 $('updated').innerHTML = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU') +
                     ' <button class="refresh-btn" onclick="load()">Обновить</button>';
