@@ -153,7 +153,26 @@
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
+            color: #e6edf3;
+            text-decoration: none;
         }
+
+        a.offer-nick:hover { color: #58a6ff; }
+
+        .sell-btn {
+            display: inline-block;
+            margin-top: 4px;
+            padding: 4px 10px;
+            background: #da3633;
+            color: #fff;
+            border-radius: 6px;
+            text-decoration: none;
+            font-size: 11px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .sell-btn:hover { background: #f85149; }
 
         .offer-stats {
             font-size: 12px;
@@ -332,7 +351,7 @@
             </div>
             <div class="best-deviation" id="best-dev">—</div>
             <div class="best-trust" id="best-trust"></div>
-            <a class="best-link" id="best-link" href="#" target="_blank">Открыть на Bybit</a>
+            <a class="best-link" id="best-link" href="#" target="_blank">Продать USDT этому покупателю</a>
         </div>
         <div class="error-msg" id="error" style="display:none"></div>
     </div>
@@ -442,9 +461,8 @@
             return Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 });
         }
 
-        function adUrl(o) {
-            // actionType=0 = Продажа USDT (ты продаёшь, получаешь RUB)
-            return 'https://www.bybit.com/fiat/trade/otc/?actionType=0&token=USDT&fiat=RUB&paymentMethod=14';
+        function profileUrl(o) {
+            return 'https://www.bybit.com/ru-RU/p2p/profile/' + o.userMaskId + '/USDT/RUB/item';
         }
 
         function trustScore(o) {
@@ -526,7 +544,7 @@
                 const bestTrust = trustScore(best);
                 const bestTrustInfo = trustLabel(bestTrust);
                 $('best-trust').innerHTML = '<span class="trust ' + bestTrustInfo.cls + '">' + bestTrustInfo.text + '</span>';
-                $('best-link').href = adUrl(best);
+                $('best-link').href = profileUrl(best);
 
                 $('loading').style.display = 'none';
                 $('best-content').style.display = 'block';
@@ -542,14 +560,16 @@
                     const ts = trustScore(o);
                     const tl = trustLabel(ts);
 
+                    const url = profileUrl(o);
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>
                             <div class="badge-row">
                                 ${i === 0 ? '<span class="badge badge-top">BEST</span>' : ''}
-                                <span class="offer-nick">${o.nickName}</span>
+                                <a class="offer-nick" href="${url}" target="_blank">${o.nickName}</a>
                             </div>
-                            <a class="offer-link" href="${adUrl(o)}" target="_blank">Bybit &rarr;</a>
+                            <a class="sell-btn" href="${url}" target="_blank">Продать USDT</a>
                         </td>
                         <td>
                             <div class="offer-price">${price.toFixed(2)} ₽</div>
