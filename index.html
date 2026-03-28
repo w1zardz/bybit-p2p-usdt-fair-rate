@@ -401,10 +401,124 @@
             max-width: 560px;
         }
 
+        /* Calculator */
+        .calc-toggle {
+            cursor: pointer;
+            font-size: 15px;
+            color: #58a6ff;
+            font-weight: 600;
+            list-style: none;
+            padding: 8px 0;
+            text-align: center;
+        }
+
+        .calc-toggle::-webkit-details-marker { display: none; }
+
+        .calc-toggle::before {
+            content: '▸ ';
+            font-family: monospace;
+        }
+
+        details[open] .calc-toggle::before { content: '▾ '; }
+
+        .calc-body {
+            margin-top: 16px;
+        }
+
+        .calc-row {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .calc-field {
+            flex: 1;
+        }
+
+        .calc-field label {
+            display: block;
+            font-size: 12px;
+            color: #8b949e;
+            margin-bottom: 4px;
+        }
+
+        .calc-field input, .calc-field select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #e6edf3;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .calc-field input:focus, .calc-field select:focus {
+            border-color: #58a6ff;
+        }
+
+        .calc-field select option {
+            background: #0d1117;
+        }
+
+        .calc-result {
+            background: #0d1117;
+            border-radius: 10px;
+            padding: 16px;
+            margin-top: 8px;
+        }
+
+        .calc-result-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            font-size: 14px;
+            border-bottom: 1px solid #21262d;
+        }
+
+        .calc-result-row:last-child { border-bottom: none; }
+
+        .calc-result-row .label { color: #8b949e; }
+        .calc-result-row .value { font-weight: 600; }
+
+        .calc-big {
+            text-align: center;
+            padding: 16px 0 8px;
+        }
+
+        .calc-big-num {
+            font-size: 36px;
+            font-weight: 700;
+            color: #3fb950;
+        }
+
+        .calc-big-label {
+            font-size: 13px;
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        .calc-verdict {
+            text-align: center;
+            margin-top: 12px;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .verdict-good { background: #0d2818; color: #3fb950; }
+        .verdict-ok { background: #1a1f00; color: #a5d64e; }
+        .verdict-bad { background: #2d0a0a; color: #f85149; }
+        .verdict-warn { background: #2a1f00; color: #d29922; }
+
         @media (max-width: 420px) {
             .best-price { font-size: 40px; }
             .fair-value { font-size: 22px; }
             .offers-table { font-size: 13px; }
+            .calc-row { flex-direction: column; gap: 8px; }
+            .calc-big-num { font-size: 28px; }
         }
     </style>
 </head>
@@ -495,6 +609,69 @@
 
     <div class="updated" id="updated"></div>
     <p class="note">Цена &mdash; <strong>минимальная</strong> из всех объявлений мерчанта (реальный курс, а не завышенный). Подозрительные свёрнуты. "Безопасный" = &ge;95% завершения, &ge;50 сделок, цена в чистой зоне.</p>
+
+    <!-- P2P Calculator -->
+    <div class="card" id="calc-card" style="display:none; max-width:560px;">
+        <details>
+            <summary class="calc-toggle">Калькулятор выгодности P2P</summary>
+            <div class="calc-body">
+                <div class="calc-row">
+                    <div class="calc-field">
+                        <label>Сумма USDT</label>
+                        <input type="number" id="calc-usdt" placeholder="1000" value="1000" oninput="calcUpdate()">
+                    </div>
+                    <div class="calc-field">
+                        <label>Курс продажи (₽)</label>
+                        <input type="number" id="calc-price" placeholder="79.50" step="0.01" oninput="calcUpdate()">
+                    </div>
+                </div>
+                <div class="calc-row">
+                    <div class="calc-field">
+                        <label>Сравнить с</label>
+                        <select id="calc-compare" onchange="calcUpdate()">
+                            <option value="fair">Fair Rate (ЦБ × USDT)</option>
+                            <option value="best">Лучший безопасный оффер</option>
+                            <option value="custom">Другой курс...</option>
+                        </select>
+                    </div>
+                    <div class="calc-field" id="calc-custom-wrap" style="display:none">
+                        <label>Свой курс (₽)</label>
+                        <input type="number" id="calc-custom" placeholder="80.00" step="0.01" oninput="calcUpdate()">
+                    </div>
+                </div>
+
+                <div class="calc-big">
+                    <div class="calc-big-num" id="calc-rub">—</div>
+                    <div class="calc-big-label">Вы получите рублей</div>
+                </div>
+
+                <div class="calc-result" id="calc-details">
+                    <div class="calc-result-row">
+                        <span class="label">По fair rate</span>
+                        <span class="value" id="calc-fair-rub">—</span>
+                    </div>
+                    <div class="calc-result-row">
+                        <span class="label">Разница</span>
+                        <span class="value" id="calc-diff">—</span>
+                    </div>
+                    <div class="calc-result-row">
+                        <span class="label">Отклонение от fair</span>
+                        <span class="value" id="calc-pct">—</span>
+                    </div>
+                    <div class="calc-result-row">
+                        <span class="label">По лучшему безопасному</span>
+                        <span class="value" id="calc-best-rub">—</span>
+                    </div>
+                    <div class="calc-result-row">
+                        <span class="label">Разница с лучшим</span>
+                        <span class="value" id="calc-best-diff">—</span>
+                    </div>
+                </div>
+
+                <div class="calc-verdict" id="calc-verdict"></div>
+            </div>
+        </details>
+    </div>
 
     <footer>
         Источники: <a href="https://www.cbr-xml-daily.ru/" target="_blank">ЦБ РФ</a> &middot;
@@ -678,6 +855,65 @@
             return Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 });
         }
 
+        // Global state for calculator
+        let gFairRate = 0;
+        let gBestSafePrice = 0;
+
+        function calcUpdate() {
+            const usdt = parseFloat($('calc-usdt').value) || 0;
+            const price = parseFloat($('calc-price').value) || 0;
+            const mode = $('calc-compare').value;
+
+            $('calc-custom-wrap').style.display = mode === 'custom' ? '' : 'none';
+
+            if (!usdt || !price || !gFairRate) {
+                $('calc-rub').textContent = '—';
+                $('calc-verdict').style.display = 'none';
+                return;
+            }
+
+            const rub = usdt * price;
+            const fairRub = usdt * gFairRate;
+            const bestRub = gBestSafePrice ? usdt * gBestSafePrice : 0;
+            const diff = rub - fairRub;
+            const pct = ((price - gFairRate) / gFairRate) * 100;
+
+            $('calc-rub').textContent = fmtNum(rub) + ' ₽';
+            $('calc-rub').style.color = pct > -2 ? '#f85149' : pct > -5 ? '#3fb950' : '#d29922';
+            $('calc-fair-rub').textContent = fmtNum(fairRub) + ' ₽';
+            $('calc-diff').textContent = (diff >= 0 ? '+' : '') + fmtNum(diff) + ' ₽';
+            $('calc-diff').style.color = diff >= 0 ? '#f85149' : '#3fb950';
+            $('calc-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+            $('calc-pct').style.color = pct > -2 ? '#f85149' : pct > -5 ? '#3fb950' : '#d29922';
+
+            if (bestRub) {
+                const bestDiff = rub - bestRub;
+                $('calc-best-rub').textContent = fmtNum(bestRub) + ' ₽';
+                $('calc-best-diff').textContent = (bestDiff >= 0 ? '+' : '') + fmtNum(bestDiff) + ' ₽';
+                $('calc-best-diff').style.color = bestDiff > 0 ? '#3fb950' : bestDiff < 0 ? '#f85149' : '#8b949e';
+            } else {
+                $('calc-best-rub').textContent = '—';
+                $('calc-best-diff').textContent = '—';
+            }
+
+            // Verdict
+            const v = $('calc-verdict');
+            v.style.display = 'block';
+            if (pct > 0) {
+                v.className = 'calc-verdict verdict-bad';
+                v.textContent = '⛔ Курс ВЫШЕ fair rate — признак грязных денег. Не продавайте!';
+            } else if (pct > -2) {
+                v.className = 'calc-verdict verdict-warn';
+                v.textContent = '⚠️ Курс в серой зоне (0–2% ниже fair). Высокий риск грязных денег.';
+            } else if (pct >= -5) {
+                v.className = 'calc-verdict verdict-good';
+                v.textContent = '✅ Курс в чистой зоне (' + pct.toFixed(1) + '% от fair). Безопасно продавать.';
+            } else {
+                v.className = 'calc-verdict verdict-ok';
+                v.textContent = '💡 Курс сильно ниже fair (' + pct.toFixed(1) + '%). Чисто, но невыгодно.';
+            }
+        }
+
         async function load() {
             $('loading').style.display = 'block';
             $('best-content').style.display = 'none';
@@ -826,6 +1062,17 @@
                     $('dirty-count').textContent = dirtyOffers.length;
                     $('dirty-card').style.display = 'block';
                 }
+
+                // Update calculator globals
+                gFairRate = fairRate;
+                if (safeBest) gBestSafePrice = parseFloat(safeBest.price);
+
+                // Pre-fill calculator with best safe price
+                if (gBestSafePrice && !$('calc-price').dataset.userEdited) {
+                    $('calc-price').value = gBestSafePrice.toFixed(2);
+                }
+                $('calc-card').style.display = 'block';
+                calcUpdate();
 
                 $('updated').innerHTML = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU') +
                     ' <button class="refresh-btn" onclick="load()">Обновить</button>';
