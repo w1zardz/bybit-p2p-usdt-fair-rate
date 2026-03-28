@@ -401,6 +401,28 @@
             max-width: 560px;
         }
 
+        /* Load more button */
+        .more-btn {
+            display: block;
+            width: 100%;
+            margin-top: 12px;
+            padding: 10px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            color: #8b949e;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .more-btn:hover {
+            background: #30363d;
+            color: #e6edf3;
+            border-color: #58a6ff;
+        }
+
         /* Calculator */
         .calc-toggle {
             cursor: pointer;
@@ -585,6 +607,7 @@
         <div id="no-safe" style="display:none; text-align:center; color:#d29922; padding:16px; font-size:14px;">
             Безопасных офферов сейчас нет. Все текущие предложения выше порога риска.
         </div>
+        <button class="more-btn" id="safe-more" style="display:none">Загрузить ещё</button>
     </div>
 
     <!-- Dirty offers (collapsed) -->
@@ -604,6 +627,7 @@
                 </thead>
                 <tbody id="dirty-body"></tbody>
             </table>
+            <button class="more-btn" id="dirty-more" style="display:none">Загрузить ещё</button>
         </details>
     </div>
 
@@ -1041,24 +1065,63 @@
                     tbody.appendChild(tr);
                 }
 
-                // Safe table
+                const PAGE_SIZE = 10;
+
+                // Safe table — show 10 at a time
                 const safeBody = $('safe-body');
                 safeBody.innerHTML = '';
+                let safeShown = 0;
+
+                function showMoreSafe() {
+                    const end = Math.min(safeShown + PAGE_SIZE, safeOffers.length);
+                    for (let i = safeShown; i < end; i++) {
+                        renderRow(safeOffers[i], safeBody, i === 0);
+                    }
+                    safeShown = end;
+                    const btn = $('safe-more');
+                    if (safeShown >= safeOffers.length) {
+                        btn.style.display = 'none';
+                    } else {
+                        btn.style.display = 'block';
+                        btn.textContent = 'Загрузить ещё (' + (safeOffers.length - safeShown) + ' осталось)';
+                    }
+                }
+
                 if (safeOffers.length > 0) {
-                    safeOffers.forEach((o, i) => renderRow(o, safeBody, i === 0));
+                    showMoreSafe();
+                    $('safe-more').onclick = showMoreSafe;
                     $('safe-title').textContent = 'Безопасные офферы (' + safeOffers.length + ')';
                     $('no-safe').style.display = 'none';
                 } else {
                     $('safe-title').textContent = 'Безопасные офферы';
                     $('no-safe').style.display = 'block';
+                    $('safe-more').style.display = 'none';
                 }
                 $('safe-card').style.display = 'block';
 
-                // Dirty table (collapsed)
+                // Dirty table — show 10 at a time
                 if (dirtyOffers.length > 0) {
                     const dirtyBody = $('dirty-body');
                     dirtyBody.innerHTML = '';
-                    dirtyOffers.forEach(o => renderRow(o, dirtyBody, false));
+                    let dirtyShown = 0;
+
+                    function showMoreDirty() {
+                        const end = Math.min(dirtyShown + PAGE_SIZE, dirtyOffers.length);
+                        for (let i = dirtyShown; i < end; i++) {
+                            renderRow(dirtyOffers[i], dirtyBody, false);
+                        }
+                        dirtyShown = end;
+                        const btn = $('dirty-more');
+                        if (dirtyShown >= dirtyOffers.length) {
+                            btn.style.display = 'none';
+                        } else {
+                            btn.style.display = 'block';
+                            btn.textContent = 'Загрузить ещё (' + (dirtyOffers.length - dirtyShown) + ' осталось)';
+                        }
+                    }
+
+                    showMoreDirty();
+                    $('dirty-more').onclick = showMoreDirty;
                     $('dirty-count').textContent = dirtyOffers.length;
                     $('dirty-card').style.display = 'block';
                 }
