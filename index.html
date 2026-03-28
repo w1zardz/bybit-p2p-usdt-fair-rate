@@ -375,7 +375,7 @@
     <p class="subtitle">Продажа USDT &rarr; Сбербанк (RUB)</p>
 
     <div class="warning-banner">
-        <strong>&#9888; Осторожно:</strong> офферы по цене <strong>выше fair rate</strong> (или близко к нему) часто означают грязный трафик &mdash; казино, процессинг, несколько платежей. Рубли могут прийти с карт дропов. Через месяц-год может прилететь <strong>ст. 161 УК РФ</strong>. Проверенные контрагенты работают по <strong>96&ndash;98% от fair rate</strong>.
+        <strong>&#9888; Осторожно:</strong> офферы <strong>выше fair rate</strong> = грязный трафик (казино, процессинг, дропы). Через месяц-год &mdash; <strong>ст. 161 УК РФ</strong>. Реально чистый курс &mdash; <strong>96&ndash;98% от fair</strong> (только через личных контрагентов). На Bybit P2P самые адекватные &mdash; те, что ниже всех, с высоким % завершения.
     </div>
 
     <!-- Best SAFE offer -->
@@ -513,30 +513,36 @@
         }
 
         // Is the offer suspicious? (dirty money risk)
+        // Reality: Bybit P2P lowest offers are ~80.50 at fair ~81.
+        // Truly clean off-exchange rate is ~79 (96-98% of fair).
+        // On Bybit, offers above fair rate = definitely dirty.
+        // Offers at fair ± 0.5% = high risk (too close to fair for P2P).
+        // Offers below -0.5% from fair = normal Bybit P2P market.
         function isDirty(o, fairRate) {
             const price = parseFloat(o.price);
             const pct = ((price - fairRate) / fairRate) * 100;
             const comp = completionRate(o) * 100;
             const finished = parseInt(o.finishNum) || 0;
 
-            // Offer above 99% of fair rate = suspicious (honest sellers work at 96-98%)
-            if (pct > -1) return true;
-            // Very low completion = unreliable
-            if (comp < 80) return true;
-            // Too few deals + high price
-            if (finished < 20 && pct > -2) return true;
+            // Above fair rate = definitely dirty
+            if (pct > 0) return true;
+            // Very low completion = unreliable regardless of price
+            if (comp < 85) return true;
+            // Few deals + close to fair = suspicious
+            if (finished < 30 && pct > -0.5) return true;
 
             return false;
         }
 
-        // Is the offer safe enough for "best safe" pick?
+        // Is the offer "safe" for Bybit? (best available, not the off-exchange ideal)
         function isSafe(o, fairRate) {
             const price = parseFloat(o.price);
             const pct = ((price - fairRate) / fairRate) * 100;
             const comp = completionRate(o) * 100;
             const finished = parseInt(o.finishNum) || 0;
 
-            return comp >= 90 && finished >= 50 && pct <= -1;
+            // Good completion, decent history, price not above fair
+            return comp >= 95 && finished >= 50 && pct <= 0;
         }
 
         function trustScore(o) {
@@ -577,10 +583,10 @@
         }
 
         function devClass(pct) {
-            if (pct > -1) return 'dev-bad';   // too high = dirty
-            if (pct >= -2) return 'dev-good';  // sweet spot
-            if (pct >= -4) return 'dev-ok';
-            return 'dev-weak';
+            if (pct > 0) return 'dev-bad';     // above fair = dirty
+            if (pct > -0.3) return 'dev-weak'; // very close to fair = risky
+            if (pct >= -1) return 'dev-ok';    // normal Bybit P2P
+            return 'dev-good';                 // below -1% = good deal
         }
 
         function rateClass(pct) {
@@ -614,12 +620,11 @@
                 $('cbr-rate').textContent = usdRub.toFixed(4);
                 $('usdt-price').textContent = '$' + usdtUsd.toFixed(4);
 
-                const safeHigh = (fairRate * 0.99).toFixed(2);
-                const safeLow = (fairRate * 0.96).toFixed(2);
+                const idealRate = (fairRate * 0.975).toFixed(2);
                 $('safe-range').innerHTML =
-                    'Безопасный диапазон: <strong>' + safeLow + ' &mdash; ' + safeHigh + ' ₽</strong><br>' +
-                    'Выше ' + safeHigh + ' ₽ &mdash; <span class="danger">риск грязных денег</span><br>' +
-                    'Ниже ' + safeLow + ' ₽ &mdash; слишком низко, невыгодно';
+                    'Идеальный курс (вне биржи, личные контакты): <strong>~' + idealRate + ' ₽</strong> (96&ndash;98% от fair)<br>' +
+                    'Bybit P2P реально: <strong>' + (fairRate * 0.993).toFixed(2) + ' &mdash; ' + fairRate.toFixed(2) + ' ₽</strong><br>' +
+                    'Выше ' + fairRate.toFixed(2) + ' ₽ &mdash; <span class="danger">точно грязные деньги</span>';
 
                 $('fair-card').style.display = 'block';
 
