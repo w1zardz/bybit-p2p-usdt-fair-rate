@@ -732,43 +732,67 @@
             return (await proxiedGet('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd')).tether.usd;
         }
 
-        async function fetchBybitP2P(fairRate) {
-            // side=0 = merchants BUYING USDT from you (you sell, get RUB)
-            // API sorts highest price first (dirty money at top).
-            // IMPORTANT: merchants have MULTIPLE ads at different prices.
-            // We keep only the LOWEST price per merchant (userId) —
-            // that's the real price you'll actually get, not the inflated one.
-            const byUser = new Map(); // userId → item with lowest price
+        // Incremental P2P loader — fetches pages on demand
+        const p2p = {
+            byUser: new Map(),   // userId → item with lowest price
+            nextPage: 1,
+            done: false,         // no more pages from API
+            fairRate: 0,
 
-            for (let page = 1; page <= 150; page++) {
-                const data = await proxiedPost('https://api2.bybit.com/fiat/otc/item/online', {
-                    tokenId: 'USDT', currencyId: 'RUB', payment: ['14'],
-                    side: '0', size: '20', page: String(page), amount: ''
-                });
-                if (data.ret_code !== 0) break;
-                const items = data.result.items || [];
-                if (items.length === 0) break;
+            reset() {
+                this.byUser = new Map();
+                this.nextPage = 1;
+                this.done = false;
+            },
 
-                for (const item of items) {
-                    const price = parseFloat(item.price);
-                    const uid = item.userId;
+            // Load pages until we have at least `need` NEW safe offers (or run out)
+            async loadUntilSafe(need) {
+                let newSafe = 0;
+                const prevSafe = this.getSafe().length;
 
-                    // Keep lowest price per merchant
-                    if (!byUser.has(uid) || price < parseFloat(byUser.get(uid).price)) {
-                        byUser.set(uid, item);
+                while (!this.done && newSafe < need) {
+                    const data = await proxiedPost('https://api2.bybit.com/fiat/otc/item/online', {
+                        tokenId: 'USDT', currencyId: 'RUB', payment: ['14'],
+                        side: '0', size: '20', page: String(this.nextPage), amount: ''
+                    });
+                    this.nextPage++;
+
+                    if (data.ret_code !== 0) { this.done = true; break; }
+                    const items = data.result.items || [];
+                    if (items.length === 0) { this.done = true; break; }
+
+                    for (const item of items) {
+                        const price = parseFloat(item.price);
+                        const uid = item.userId;
+                        if (!this.byUser.has(uid) || price < parseFloat(this.byUser.get(uid).price)) {
+                            this.byUser.set(uid, item);
+                        }
                     }
+
+                    // Stop if below 93% of fair
+                    const minPrice = Math.min(...items.map(i => parseFloat(i.price)));
+                    if (this.fairRate && minPrice < this.fairRate * 0.93) { this.done = true; break; }
+
+                    newSafe = this.getSafe().length - prevSafe;
                 }
 
-                // Stop if we've gone below target
-                const minPrice = Math.min(...items.map(i => parseFloat(i.price)));
-                if (fairRate && minPrice < fairRate * 0.93) break;
-            }
+                return this.getAll();
+            },
 
-            // Convert to array, sort: highest price first (best for seller)
-            const result = Array.from(byUser.values());
-            result.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-            return result;
-        }
+            getAll() {
+                const arr = Array.from(this.byUser.values());
+                arr.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+                return arr;
+            },
+
+            getSafe() {
+                return this.getAll().filter(o => isSafe(o, this.fairRate));
+            },
+
+            getDirty() {
+                return this.getAll().filter(o => isDirty(o, this.fairRate));
+            }
+        };
 
         function profileUrl(o) {
             return 'https://www.bybit.com/ru-RU/p2p/profile/' + o.userMaskId + '/USDT/RUB/item';
@@ -938,6 +962,155 @@
             }
         }
 
+        const PAGE_SIZE = 10;
+        let safeShown = 0;
+        let dirtyShown = 0;
+
+        function renderRow(o, tbody, showBest, fairRate) {
+            const price = parseFloat(o.price);
+            const diff = ((price - fairRate) / fairRate) * 100;
+            const comp = (completionRate(o) * 100).toFixed(1);
+            const ts = trustScore(o);
+            const tl = trustLabel(ts);
+            const url = profileUrl(o);
+            const dirty = isDirty(o, fairRate);
+            const accessible = isAccessible(o);
+            const minOrd = minOrdersRequired(o);
+
+            const tr = document.createElement('tr');
+            if (dirty) tr.className = 'row-dirty';
+            if (!accessible) tr.style.opacity = '0.4';
+
+            let lockInfo = '';
+            if (minOrd > 0) {
+                const color = accessible ? '#8b949e' : '#f85149';
+                lockInfo = '<div class="offer-stats" style="color:' + color + '">' +
+                    (accessible ? '' : '&#128274; ') + 'мин. ' + minOrd + ' сделок/мес</div>';
+            }
+
+            tr.innerHTML = `
+                <td>
+                    <div class="badge-row">
+                        ${showBest ? '<span class="badge badge-top">BEST</span>' : ''}
+                        ${dirty ? '<span class="badge badge-dirty">&#9888;</span>' : ''}
+                        ${!accessible ? '<span class="badge" style="background:#d29922;color:#0d1117">&#128274;</span>' : ''}
+                        <a class="offer-nick" href="${url}" target="_blank">${o.nickName}</a>
+                    </div>
+                    <a class="sell-btn" href="${url}" target="_blank">Продать USDT</a>
+                </td>
+                <td>
+                    <div class="offer-price">${price.toFixed(2)} &#8381;</div>
+                    <div class="offer-stats">${(diff >= 0 ? '+' : '') + diff.toFixed(2)}%</div>
+                    ${dirty ? '<div class="offer-stats" style="color:#f85149">грязные?</div>' : ''}
+                </td>
+                <td>
+                    <div class="offer-limit">${fmtNum(o.minAmount)}–${fmtNum(o.maxAmount)} &#8381;</div>
+                    <span class="trust ${tl.cls}">${ts}/100</span>
+                    ${lockInfo}
+                </td>
+                <td>
+                    <span class="offer-rate ${rateClass(parseFloat(comp))}">${comp}%</span>
+                    <div class="offer-stats">${fmtNum(o.finishNum)} шт</div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        }
+
+        function renderSafe() {
+            const safe = p2p.getSafe();
+            const end = Math.min(safeShown + PAGE_SIZE, safe.length);
+            const safeBody = $('safe-body');
+            for (let i = safeShown; i < end; i++) {
+                renderRow(safe[i], safeBody, i === 0, p2p.fairRate);
+            }
+            safeShown = end;
+
+            $('safe-title').textContent = 'Безопасные офферы (' + safe.length + (p2p.done ? '' : '+') + ')';
+
+            const btn = $('safe-more');
+            if (safeShown >= safe.length && p2p.done) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'block';
+                const remaining = safe.length - safeShown;
+                btn.textContent = remaining > 0
+                    ? 'Загрузить ещё (' + remaining + ' готово' + (p2p.done ? '' : ', ищем ещё') + ')'
+                    : 'Загрузить ещё';
+            }
+        }
+
+        function renderDirty() {
+            const dirty = p2p.getDirty();
+            if (dirty.length === 0) return;
+            const end = Math.min(dirtyShown + PAGE_SIZE, dirty.length);
+            const dirtyBody = $('dirty-body');
+            for (let i = dirtyShown; i < end; i++) {
+                renderRow(dirty[i], dirtyBody, false, p2p.fairRate);
+            }
+            dirtyShown = end;
+
+            $('dirty-count').textContent = dirty.length + (p2p.done ? '' : '+');
+            $('dirty-card').style.display = 'block';
+
+            const btn = $('dirty-more');
+            if (dirtyShown >= dirty.length && p2p.done) {
+                btn.style.display = 'none';
+            } else {
+                btn.style.display = 'block';
+                const remaining = dirty.length - dirtyShown;
+                btn.textContent = remaining > 0
+                    ? 'Загрузить ещё (' + remaining + ' готово)'
+                    : 'Загрузить ещё';
+            }
+        }
+
+        async function loadMoreSafe() {
+            const btn = $('safe-more');
+            const safe = p2p.getSafe();
+
+            // If we already have unrendered safe offers, just render them
+            if (safeShown < safe.length) {
+                renderSafe();
+                return;
+            }
+
+            // Need to fetch more from API
+            if (p2p.done) { btn.style.display = 'none'; return; }
+
+            btn.textContent = 'Загрузка...';
+            btn.disabled = true;
+            try {
+                await p2p.loadUntilSafe(PAGE_SIZE);
+                renderSafe();
+                // Also update dirty count
+                renderDirtyBtn();
+            } catch (e) {
+                btn.textContent = 'Ошибка: ' + e.message + '. Попробовать снова';
+            }
+            btn.disabled = false;
+        }
+
+        function renderDirtyBtn() {
+            const dirty = p2p.getDirty();
+            if (dirty.length > 0) {
+                $('dirty-count').textContent = dirty.length + (p2p.done ? '' : '+');
+                $('dirty-card').style.display = 'block';
+                const btn = $('dirty-more');
+                const remaining = dirty.length - dirtyShown;
+                if (remaining > 0) {
+                    btn.style.display = 'block';
+                    btn.textContent = 'Загрузить ещё (' + remaining + ' готово)';
+                }
+            }
+        }
+
+        async function loadMoreDirty() {
+            const dirty = p2p.getDirty();
+            if (dirtyShown < dirty.length) {
+                renderDirty();
+            }
+        }
+
         async function load() {
             $('loading').style.display = 'block';
             $('best-content').style.display = 'none';
@@ -945,15 +1118,22 @@
             $('fair-card').style.display = 'none';
             $('safe-card').style.display = 'none';
             $('dirty-card').style.display = 'none';
+            $('safe-more').style.display = 'none';
+            $('dirty-more').style.display = 'none';
+            $('safe-body').innerHTML = '';
+            $('dirty-body').innerHTML = '';
+            safeShown = 0;
+            dirtyShown = 0;
 
             try {
                 const [usdRub, usdtUsd] = await Promise.all([fetchCBR(), fetchUSDT()]);
                 const fairRate = usdRub * usdtUsd;
 
-                $('loading').innerHTML = '<span class="spinner"></span>Загрузка офферов Bybit (ищем чистые)...';
-                const offers = await fetchBybitP2P(fairRate);
+                // Setup incremental loader
+                p2p.reset();
+                p2p.fairRate = fairRate;
 
-                // Fair rate card + safe range
+                // Fair rate card
                 $('fair-rate').textContent = fairRate.toFixed(2);
                 $('cbr-rate').textContent = usdRub.toFixed(4);
                 $('usdt-price').textContent = '$' + usdtUsd.toFixed(4);
@@ -964,19 +1144,26 @@
                     'Чистая зона: <strong>' + cleanLow + ' &mdash; ' + cleanHigh + ' ₽</strong> (95&ndash;98% от fair)<br>' +
                     'Выше ' + cleanHigh + ' ₽ &mdash; <span class="danger">риск грязных денег (казино, процессинг)</span><br>' +
                     'Ниже ' + cleanLow + ' ₽ &mdash; слишком низко, невыгодно';
-
                 $('fair-card').style.display = 'block';
 
-                if (offers.length === 0) {
+                // Load just enough to get first 10 safe offers
+                $('loading').innerHTML = '<span class="spinner"></span>Загрузка офферов Bybit...';
+                await p2p.loadUntilSafe(PAGE_SIZE);
+
+                const safe = p2p.getSafe();
+                const dirty = p2p.getDirty();
+                const all = p2p.getAll();
+
+                if (all.length === 0) {
                     $('loading').style.display = 'none';
                     $('error').style.display = 'block';
                     $('error').textContent = 'Нет офферов на Сбербанк.';
                     return;
                 }
 
-                // Find best SAFE offer (>= 90% completion, >= 50 deals, price <= 99% fair)
-                const safeBest = offers.find(o => isSafe(o, fairRate));
-                const best = safeBest || offers[0];
+                // Best offer card
+                const safeBest = safe[0];
+                const best = safeBest || all[0];
                 const bestIsSafe = !!safeBest;
 
                 const bestPrice = parseFloat(best.price);
@@ -1007,130 +1194,29 @@
                 $('loading').style.display = 'none';
                 $('best-content').style.display = 'block';
 
-                // Split into safe / dirty
-                const safeOffers = [];
-                const dirtyOffers = [];
-                offers.forEach(o => {
-                    if (isDirty(o, fairRate)) dirtyOffers.push(o);
-                    else safeOffers.push(o);
-                });
-
-                function renderRow(o, tbody, showBest) {
-                    const price = parseFloat(o.price);
-                    const diff = ((price - fairRate) / fairRate) * 100;
-                    const comp = (completionRate(o) * 100).toFixed(1);
-                    const ts = trustScore(o);
-                    const tl = trustLabel(ts);
-                    const url = profileUrl(o);
-                    const dirty = isDirty(o, fairRate);
-                    const accessible = isAccessible(o);
-                    const minOrd = minOrdersRequired(o);
-
-                    const tr = document.createElement('tr');
-                    if (dirty) tr.className = 'row-dirty';
-                    if (!accessible) tr.style.opacity = '0.4';
-
-                    let lockInfo = '';
-                    if (minOrd > 0) {
-                        const color = accessible ? '#8b949e' : '#f85149';
-                        lockInfo = '<div class="offer-stats" style="color:' + color + '">' +
-                            (accessible ? '' : '&#128274; ') + 'мин. ' + minOrd + ' сделок/мес</div>';
-                    }
-
-                    tr.innerHTML = `
-                        <td>
-                            <div class="badge-row">
-                                ${showBest ? '<span class="badge badge-top">BEST</span>' : ''}
-                                ${dirty ? '<span class="badge badge-dirty">&#9888;</span>' : ''}
-                                ${!accessible ? '<span class="badge" style="background:#d29922;color:#0d1117">&#128274;</span>' : ''}
-                                <a class="offer-nick" href="${url}" target="_blank">${o.nickName}</a>
-                            </div>
-                            <a class="sell-btn" href="${url}" target="_blank">Продать USDT</a>
-                        </td>
-                        <td>
-                            <div class="offer-price">${price.toFixed(2)} &#8381;</div>
-                            <div class="offer-stats">${(diff >= 0 ? '+' : '') + diff.toFixed(2)}%</div>
-                            ${dirty ? '<div class="offer-stats" style="color:#f85149">грязные?</div>' : ''}
-                        </td>
-                        <td>
-                            <div class="offer-limit">${fmtNum(o.minAmount)}–${fmtNum(o.maxAmount)} &#8381;</div>
-                            <span class="trust ${tl.cls}">${ts}/100</span>
-                            ${lockInfo}
-                        </td>
-                        <td>
-                            <span class="offer-rate ${rateClass(parseFloat(comp))}">${comp}%</span>
-                            <div class="offer-stats">${fmtNum(o.finishNum)} шт</div>
-                        </td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-
-                const PAGE_SIZE = 10;
-
-                // Safe table — show 10 at a time
-                const safeBody = $('safe-body');
-                safeBody.innerHTML = '';
-                let safeShown = 0;
-
-                function showMoreSafe() {
-                    const end = Math.min(safeShown + PAGE_SIZE, safeOffers.length);
-                    for (let i = safeShown; i < end; i++) {
-                        renderRow(safeOffers[i], safeBody, i === 0);
-                    }
-                    safeShown = end;
-                    const btn = $('safe-more');
-                    if (safeShown >= safeOffers.length) {
-                        btn.style.display = 'none';
-                    } else {
-                        btn.style.display = 'block';
-                        btn.textContent = 'Загрузить ещё (' + (safeOffers.length - safeShown) + ' осталось)';
-                    }
-                }
-
-                if (safeOffers.length > 0) {
-                    showMoreSafe();
-                    $('safe-more').onclick = showMoreSafe;
-                    $('safe-title').textContent = 'Безопасные офферы (' + safeOffers.length + ')';
+                // Render first batch of safe offers
+                if (safe.length > 0) {
+                    renderSafe();
                     $('no-safe').style.display = 'none';
                 } else {
-                    $('safe-title').textContent = 'Безопасные офферы';
                     $('no-safe').style.display = 'block';
-                    $('safe-more').style.display = 'none';
+                    if (!p2p.done) {
+                        $('safe-more').style.display = 'block';
+                        $('safe-more').textContent = 'Загрузить ещё (ищем безопасные)';
+                    }
                 }
                 $('safe-card').style.display = 'block';
+                $('safe-more').onclick = loadMoreSafe;
 
-                // Dirty table — show 10 at a time
-                if (dirtyOffers.length > 0) {
-                    const dirtyBody = $('dirty-body');
-                    dirtyBody.innerHTML = '';
-                    let dirtyShown = 0;
-
-                    function showMoreDirty() {
-                        const end = Math.min(dirtyShown + PAGE_SIZE, dirtyOffers.length);
-                        for (let i = dirtyShown; i < end; i++) {
-                            renderRow(dirtyOffers[i], dirtyBody, false);
-                        }
-                        dirtyShown = end;
-                        const btn = $('dirty-more');
-                        if (dirtyShown >= dirtyOffers.length) {
-                            btn.style.display = 'none';
-                        } else {
-                            btn.style.display = 'block';
-                            btn.textContent = 'Загрузить ещё (' + (dirtyOffers.length - dirtyShown) + ' осталось)';
-                        }
-                    }
-
-                    showMoreDirty();
-                    $('dirty-more').onclick = showMoreDirty;
-                    $('dirty-count').textContent = dirtyOffers.length;
-                    $('dirty-card').style.display = 'block';
+                // Render first batch of dirty (already collected while searching for safe)
+                if (dirty.length > 0) {
+                    renderDirty();
                 }
+                $('dirty-more').onclick = loadMoreDirty;
 
-                // Update calculator globals
+                // Calculator
                 gFairRate = fairRate;
                 if (safeBest) gBestSafePrice = parseFloat(safeBest.price);
-
-                // Pre-fill calculator with best safe price
                 if (gBestSafePrice && !$('calc-price').dataset.userEdited) {
                     $('calc-price').value = gBestSafePrice.toFixed(2);
                 }
