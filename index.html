@@ -191,6 +191,51 @@
 
         .badge-top { background: #3fb950; color: #0d1117; }
 
+        .offer-link {
+            color: #58a6ff;
+            text-decoration: none;
+            font-size: 11px;
+            display: inline-block;
+            margin-top: 2px;
+        }
+
+        .offer-link:hover { text-decoration: underline; }
+
+        .trust {
+            display: inline-block;
+            font-size: 11px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-top: 4px;
+        }
+
+        .trust-safe { background: #0d2818; color: #3fb950; }
+        .trust-ok { background: #1a1f00; color: #a5d64e; }
+        .trust-risky { background: #2a1f00; color: #d29922; }
+        .trust-danger { background: #2d0a0a; color: #f85149; }
+
+        .best-trust {
+            display: block;
+            margin-top: 10px;
+            font-size: 13px;
+        }
+
+        .best-link {
+            display: inline-block;
+            margin-top: 12px;
+            padding: 8px 20px;
+            background: #238636;
+            color: #fff;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.2s;
+        }
+
+        .best-link:hover { background: #2ea043; }
+
         /* Loading / error */
         .loading {
             text-align: center;
@@ -286,6 +331,8 @@
                 Лимит: <span id="best-limit">—</span> ₽
             </div>
             <div class="best-deviation" id="best-dev">—</div>
+            <div class="best-trust" id="best-trust"></div>
+            <a class="best-link" id="best-link" href="#" target="_blank">Открыть на Bybit</a>
         </div>
         <div class="error-msg" id="error" style="display:none"></div>
     </div>
@@ -395,6 +442,44 @@
             return Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 });
         }
 
+        function adUrl(o) {
+            return 'https://www.bybit.com/fiat/trade/otc/?actionType=1&token=USDT&fiat=RUB&paymentMethod=14';
+        }
+
+        function trustScore(o) {
+            // Score 0-100 based on: completion rate, order count, recent activity, KYC
+            let score = 0;
+            const comp = o.orderNum > 0 ? (o.finishNum / o.orderNum) : 0;
+            const finished = parseInt(o.finishNum) || 0;
+            const recent = parseInt(o.recentOrderNum) || 0;
+            const recentRate = parseInt(o.recentExecuteRate) || 0;
+
+            // Completion rate (0-30 pts)
+            score += Math.min(comp * 30, 30);
+
+            // Total finished orders (0-25 pts): 1000+ = max
+            score += Math.min(finished / 40, 25);
+
+            // Recent 30d orders (0-20 pts): 200+ = max
+            score += Math.min(recent / 10, 20);
+
+            // Recent 30d completion rate (0-15 pts)
+            score += Math.min(recentRate * 0.15, 15);
+
+            // KYC bonus (0-10 pts)
+            if (o.authStatus >= 1) score += 5;
+            if (o.authStatus >= 2) score += 5;
+
+            return Math.round(Math.min(score, 100));
+        }
+
+        function trustLabel(score) {
+            if (score >= 80) return { cls: 'trust-safe', text: 'Надёжный ' + score + '/100' };
+            if (score >= 60) return { cls: 'trust-ok', text: 'Нормальный ' + score + '/100' };
+            if (score >= 35) return { cls: 'trust-risky', text: 'Рискованно ' + score + '/100' };
+            return { cls: 'trust-danger', text: 'Опасно ' + score + '/100' };
+        }
+
         async function load() {
             $('loading').style.display = 'block';
             $('best-content').style.display = 'none';
@@ -437,6 +522,11 @@
                 $('best-dev').textContent = (bestDiff >= 0 ? '+' : '') + bestDiff.toFixed(2) + '% от fair';
                 $('best-dev').className = 'best-deviation ' + devClass(bestDiff);
 
+                const bestTrust = trustScore(best);
+                const bestTrustInfo = trustLabel(bestTrust);
+                $('best-trust').innerHTML = '<span class="trust ' + bestTrustInfo.cls + '">' + bestTrustInfo.text + '</span>';
+                $('best-link').href = adUrl(best);
+
                 $('loading').style.display = 'none';
                 $('best-content').style.display = 'block';
 
@@ -448,6 +538,9 @@
                     const diff = ((price - fairRate) / fairRate) * 100;
                     const comp = o.orderNum > 0 ? (o.finishNum / o.orderNum * 100).toFixed(1) : '0';
 
+                    const ts = trustScore(o);
+                    const tl = trustLabel(ts);
+
                     const tr = document.createElement('tr');
                     tr.innerHTML = `
                         <td>
@@ -455,12 +548,16 @@
                                 ${i === 0 ? '<span class="badge badge-top">BEST</span>' : ''}
                                 <span class="offer-nick">${o.nickName}</span>
                             </div>
+                            <a class="offer-link" href="${adUrl(o)}" target="_blank">Bybit &rarr;</a>
                         </td>
                         <td>
                             <div class="offer-price">${price.toFixed(2)} ₽</div>
                             <div class="offer-stats">${(diff >= 0 ? '+' : '') + diff.toFixed(2)}%</div>
                         </td>
-                        <td class="offer-limit">${fmtNum(o.minAmount)}–${fmtNum(o.maxAmount)} ₽</td>
+                        <td>
+                            <div class="offer-limit">${fmtNum(o.minAmount)}–${fmtNum(o.maxAmount)} ₽</div>
+                            <span class="trust ${tl.cls}">${ts}/100</span>
+                        </td>
                         <td>
                             <span class="offer-rate ${rateClass(parseFloat(comp))}">${comp}%</span>
                             <div class="offer-stats">${fmtNum(o.finishNum)} шт</div>
