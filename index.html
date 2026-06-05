@@ -3,16 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>USDT Fair Rate — Лучший курс продажи USDT на Сбербанк</title>
-    <meta name="description" content="Справедливый курс USDT к рублю — мониторинг P2P офферов Bybit с фильтром грязных денег. Продать USDT на Сбербанк по честному курсу. Обмен USDT на рубли безопасно.">
-    <meta name="keywords" content="курс USDT, USDT рубль, P2P Bybit, продать USDT, обмен USDT на рубли, справедливый курс USDT, USDT Сбербанк, грязные деньги P2P, безопасный обмен USDT, USDT RUB, курс USDT сегодня, Bybit P2P обмен">
+    <title>USDT Fair Rate — Лучший курс продажи USDT на Сбербанк без грязных денег</title>
+    <meta name="description" content="Справедливый курс USDT к рублю — мониторинг P2P офферов Bybit с фильтром грязных денег (161 ФЗ), рейтингом доверия и детектором приманок. Продать USDT на Сбербанк по честному курсу безопасно.">
+    <meta name="keywords" content="курс USDT, USDT рубль, P2P Bybit, продать USDT, обмен USDT на рубли, справедливый курс USDT, USDT Сбербанк, грязные деньги P2P, 161 ФЗ, безопасный обмен USDT, USDT RUB, курс USDT сегодня, Bybit P2P обмен, чистые мейкеры">
     <meta name="author" content="w1zardz">
     <link rel="canonical" href="https://w1zardz.github.io/bybit-p2p-usdt-fair-rate/">
 
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:title" content="USDT Fair Rate — Справедливый курс USDT/RUB на Bybit P2P">
-    <meta property="og:description" content="Мониторинг P2P офферов Bybit: справедливый курс USDT к рублю, фильтр грязных денег, рейтинг доверия продавцов. Продать USDT на Сбербанк безопасно.">
+    <meta property="og:description" content="Мониторинг P2P офферов Bybit: справедливый курс USDT к рублю, фильтр грязных денег (161 ФЗ), детектор приманок, рейтинг доверия продавцов. Продать USDT на Сбербанк безопасно.">
     <meta property="og:url" content="https://w1zardz.github.io/bybit-p2p-usdt-fair-rate/">
     <meta property="og:locale" content="ru_RU">
     <meta property="og:site_name" content="USDT Fair Rate">
@@ -20,7 +20,7 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary">
     <meta name="twitter:title" content="USDT Fair Rate — Справедливый курс USDT/RUB">
-    <meta name="twitter:description" content="Мониторинг P2P офферов Bybit с фильтром грязных денег. Продать USDT на Сбербанк по честному курсу.">
+    <meta name="twitter:description" content="Мониторинг P2P офферов Bybit с фильтром грязных денег и детектором приманок. Продать USDT на Сбербанк по честному курсу.">
 
     <!-- Structured Data -->
     <script type="application/ld+json">
@@ -29,1211 +29,1313 @@
         "@type": "WebApplication",
         "name": "USDT Fair Rate",
         "alternateName": "Справедливый курс USDT",
-        "description": "Мониторинг P2P офферов Bybit: справедливый курс USDT к рублю с фильтром грязных денег. Обмен USDT на рубли через Сбербанк безопасно.",
+        "description": "Мониторинг P2P офферов Bybit: справедливый курс USDT к рублю с фильтром грязных денег, детектором приманок и рейтингом доверия. Обмен USDT на рубли через Сбербанк безопасно.",
         "url": "https://w1zardz.github.io/bybit-p2p-usdt-fair-rate/",
         "applicationCategory": "FinanceApplication",
         "operatingSystem": "Web",
-        "offers": {
-            "@type": "Offer",
-            "price": "0",
-            "priceCurrency": "USD"
-        },
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
         "inLanguage": "ru",
         "keywords": "курс USDT, USDT рубль, P2P Bybit, продать USDT, обмен USDT на рубли, справедливый курс USDT, USDT Сбербанк, грязные деньги P2P, безопасный обмен USDT"
     }
     </script>
 
     <style>
+        :root {
+            --bg: #070810;
+            --card: rgba(12, 14, 21, 0.82);
+            --border: rgba(255, 255, 255, 0.08);
+            --border-hi: rgba(255, 255, 255, 0.14);
+            --text: #e6edf3;
+            --muted: #8b949e;
+            --dim: #5b6573;
+
+            --emerald: #34d399;
+            --lime: #a3e635;
+            --amber: #fbbf24;
+            --rose: #fb7185;
+            --cyan: #22d3ee;
+            --orange: #fb923c;
+            --blue: #58a6ff;
+        }
+
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            background: #0d1117;
-            color: #e6edf3;
+            background: var(--bg);
+            color: var(--text);
             min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 32px 16px;
+            position: relative;
+            overflow-x: hidden;
+            padding: 28px 14px 64px;
         }
 
-        h1 { font-size: 26px; font-weight: 700; text-align: center; }
-
-        .subtitle {
-            color: #8b949e;
-            font-size: 14px;
-            margin: 6px 0 28px;
-            text-align: center;
-        }
-
-        .card {
-            background: #161b22;
-            border: 1px solid #30363d;
-            border-radius: 12px;
-            padding: 24px;
-            width: 100%;
-            max-width: 560px;
-            margin-bottom: 16px;
-        }
-
-        .card h2 {
-            font-size: 14px;
-            color: #8b949e;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 16px;
-        }
-
-        /* Warning banner */
-        .warning-banner {
-            background: #2d1800;
-            border: 1px solid #d29922;
-            border-radius: 10px;
-            padding: 14px 18px;
-            width: 100%;
-            max-width: 560px;
-            margin-bottom: 16px;
-            font-size: 13px;
-            color: #d29922;
-            line-height: 1.5;
-        }
-
-        .warning-banner strong { color: #f0b440; }
-
-        /* Best offer card */
-        .best-offer { text-align: center; }
-
-        .best-price {
-            font-size: 56px;
-            font-weight: 700;
-            line-height: 1;
-        }
-
-        .best-currency {
-            font-size: 18px;
-            color: #8b949e;
-            margin-left: 4px;
-        }
-
-        .best-meta {
-            margin-top: 12px;
-            font-size: 14px;
-            color: #8b949e;
-        }
-
-        .best-meta strong { color: #e6edf3; }
-
-        .best-deviation {
-            display: inline-block;
-            margin-top: 10px;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .dev-good { background: #0d2818; color: #3fb950; }
-        .dev-ok { background: #0d2818; color: #56d364; }
-        .dev-weak { background: #2a1f00; color: #d29922; }
-        .dev-bad { background: #2d0a0a; color: #f85149; }
-
-        .best-trust {
-            display: block;
-            margin-top: 10px;
-            font-size: 13px;
-        }
-
-        .best-link {
-            display: inline-block;
-            margin-top: 12px;
-            padding: 8px 20px;
-            background: #238636;
-            color: #fff;
-            border-radius: 8px;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .best-link:hover { background: #2ea043; }
-
-        /* Dirty money warning on offer */
-        .dirty-warn {
-            display: inline-block;
-            margin-top: 6px;
-            padding: 3px 10px;
-            border-radius: 6px;
-            font-size: 12px;
-            font-weight: 600;
-            background: #2d0a0a;
-            color: #f85149;
-        }
-
-        /* Fair rate row */
-        .fair-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .fair-value {
-            font-size: 28px;
-            font-weight: 700;
-            color: #58a6ff;
-        }
-
-        .fair-sub { font-size: 13px; color: #8b949e; }
-
-        .fair-sources {
-            display: flex;
-            gap: 16px;
-            margin-top: 12px;
-        }
-
-        .fair-sources span { font-size: 12px; color: #484f58; }
-
-        .safe-range {
-            margin-top: 14px;
-            padding: 10px 14px;
-            background: #0d1117;
-            border-radius: 8px;
-            font-size: 13px;
-            color: #8b949e;
-            line-height: 1.6;
-        }
-
-        .safe-range strong { color: #3fb950; }
-        .safe-range .danger { color: #f85149; }
-
-        /* Offers table */
-        .offers-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .offers-table th {
-            text-align: left;
-            font-size: 11px;
-            color: #484f58;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            padding: 0 0 10px;
-            border-bottom: 1px solid #21262d;
-        }
-
-        .offers-table th:last-child,
-        .offers-table td:last-child { text-align: right; }
-
-        .offers-table td {
-            padding: 10px 0;
-            font-size: 14px;
-            border-bottom: 1px solid #21262d;
-            vertical-align: middle;
-        }
-
-        .offers-table tr:last-child td { border-bottom: none; }
-
-        .offers-table tr.row-dirty { opacity: 0.5; }
-        .offers-table tr.row-dirty:hover { opacity: 0.8; }
-
-        .offer-price { font-weight: 600; font-size: 16px; }
-
-        .offer-nick {
-            max-width: 120px;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-            color: #e6edf3;
-            text-decoration: none;
-        }
-
-        a.offer-nick:hover { color: #58a6ff; }
-
-        .sell-btn {
-            display: inline-block;
-            margin-top: 4px;
-            padding: 4px 10px;
-            background: #da3633;
-            color: #fff;
-            border-radius: 6px;
-            text-decoration: none;
-            font-size: 11px;
-            font-weight: 600;
-            transition: background 0.2s;
-        }
-
-        .sell-btn:hover { background: #f85149; }
-
-        .offer-stats { font-size: 12px; color: #8b949e; }
-
-        .offer-rate {
-            font-size: 12px;
-            padding: 2px 8px;
-            border-radius: 10px;
-            font-weight: 600;
-        }
-
-        .rate-high { background: #0d2818; color: #3fb950; }
-        .rate-mid { background: #1a1f00; color: #a5d64e; }
-        .rate-low { background: #2a1f00; color: #d29922; }
-        .rate-trash { background: #2d0a0a; color: #f85149; }
-
-        .offer-limit { font-size: 12px; color: #484f58; }
-
-        .badge-row {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .badge {
-            font-size: 10px;
-            padding: 1px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-        }
-
-        .badge-top { background: #3fb950; color: #0d1117; }
-        .badge-dirty { background: #f85149; color: #fff; }
-
-        .trust {
-            display: inline-block;
-            font-size: 11px;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-weight: 600;
-            margin-top: 4px;
-        }
-
-        .trust-safe { background: #0d2818; color: #3fb950; }
-        .trust-ok { background: #1a1f00; color: #a5d64e; }
-        .trust-risky { background: #2a1f00; color: #d29922; }
-        .trust-danger { background: #2d0a0a; color: #f85149; }
-
-        .dirty-toggle {
-            cursor: pointer;
-            font-size: 14px;
-            color: #f85149;
-            font-weight: 600;
-            list-style: none;
-            padding: 4px 0;
-        }
-
-        .dirty-toggle::-webkit-details-marker { display: none; }
-
-        .dirty-toggle::before {
-            content: '+ ';
-            font-family: monospace;
-            margin-right: 4px;
-        }
-
-        details[open] .dirty-toggle::before { content: '- '; }
-
-        /* Loading / error */
-        .loading {
-            text-align: center;
-            color: #8b949e;
-            padding: 40px;
-        }
-
-        .spinner {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #30363d;
-            border-top-color: #58a6ff;
+        /* mesh gradient blobs */
+        .mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+        .mesh i {
+            position: absolute;
             border-radius: 50%;
-            animation: spin 0.8s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
+            filter: blur(80px);
+            display: block;
+        }
+        .mesh i:nth-child(1) { top: -160px; left: -80px; width: 520px; height: 520px; opacity: 0.22;
+            background: radial-gradient(circle at center, var(--cyan), transparent 60%); }
+        .mesh i:nth-child(2) { top: 160px; right: -40px; width: 440px; height: 440px; opacity: 0.14;
+            background: radial-gradient(circle at center, var(--emerald), transparent 60%); }
+        .mesh i:nth-child(3) { bottom: 0; left: 33%; width: 380px; height: 380px; opacity: 0.10;
+            background: radial-gradient(circle at center, var(--amber), transparent 60%); }
+
+        .wrap { position: relative; z-index: 1; max-width: 680px; margin: 0 auto; }
+
+        /* hero */
+        .hero { text-align: center; margin-bottom: 26px; }
+        .pill {
+            display: inline-flex; align-items: center; gap: 8px;
+            padding: 5px 12px; border-radius: 999px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border);
+            backdrop-filter: blur(6px);
+            margin-bottom: 14px;
+        }
+        .pill .dot { position: relative; display: flex; width: 7px; height: 7px; }
+        .pill .dot::before, .pill .dot::after {
+            content: ''; position: absolute; inset: 0; border-radius: 50%; background: var(--cyan);
+        }
+        .pill .dot::before { animation: ping 1.4s cubic-bezier(0,0,0.2,1) infinite; }
+        @keyframes ping { 75%, 100% { transform: scale(2.4); opacity: 0; } }
+        .pill span.lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1.6px; font-weight: 700; color: #7ee7f5; }
+
+        h1 {
+            font-size: clamp(30px, 7vw, 50px); font-weight: 800; letter-spacing: -1px; line-height: 1.05;
+            background: linear-gradient(to bottom, #ffffff, #94a3b8);
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .subtitle { color: var(--muted); font-size: 14px; margin-top: 8px; }
+
+        /* glass card */
+        .card {
+            position: relative;
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 20px;
+            margin-bottom: 16px;
+            backdrop-filter: blur(18px);
+        }
+        .card-label {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 2px;
+            color: var(--dim); font-weight: 700;
         }
 
+        /* warning */
+        .warn {
+            position: relative; overflow: hidden;
+            border: 1px solid rgba(251, 191, 36, 0.22);
+            border-radius: 18px; margin-bottom: 18px;
+            padding: 14px 16px; display: flex; gap: 12px;
+            background: linear-gradient(100deg, rgba(251,191,36,0.08), rgba(251,113,133,0.04), rgba(251,191,36,0.08));
+            backdrop-filter: blur(6px);
+        }
+        .warn .ico {
+            flex-shrink: 0; width: 32px; height: 32px; border-radius: 9px;
+            background: rgba(251, 191, 36, 0.14); border: 1px solid rgba(251, 191, 36, 0.3);
+            display: flex; align-items: center; justify-content: center; font-size: 16px;
+        }
+        .warn .txt { font-size: 13px; line-height: 1.55; color: #f4e3bd; }
+        .warn strong { color: var(--amber); }
+
+        /* best card */
+        .best { text-align: center; overflow: hidden; }
+        .best-eyebrow {
+            font-size: 10px; text-transform: uppercase; letter-spacing: 2px; font-weight: 700;
+            margin-bottom: 12px; display: flex; align-items: center; justify-content: center; gap: 8px;
+        }
+        .best-price { font-size: clamp(46px, 13vw, 64px); font-weight: 800; line-height: 1; letter-spacing: -1.5px; }
+        .best-cur { color: var(--dim); font-size: 16px; margin-left: 4px; }
+        .best-meta { margin-top: 14px; font-size: 14px; color: var(--muted); }
+        .best-meta strong { color: #fff; }
+        .best-sub { margin-top: 3px; font-size: 13px; color: var(--dim); }
+        .best-chips { margin-top: 12px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .best-cta {
+            display: inline-flex; align-items: center; gap: 6px;
+            margin-top: 18px; padding: 11px 26px; border-radius: 12px;
+            color: #061; font-size: 14px; font-weight: 700; text-decoration: none;
+            transition: filter 0.2s, transform 0.1s;
+        }
+        .best-cta:active { transform: scale(0.96); }
+        .best-cta.clean { background: linear-gradient(to right, #10b981, #059669); color: #fff; box-shadow: 0 8px 24px rgba(16,185,129,0.3); }
+        .best-cta.acceptable { background: linear-gradient(to right, #84cc16, #65a30d); color: #08130a; box-shadow: 0 8px 24px rgba(132,204,22,0.25); }
+        .best-cta.warnclr { background: linear-gradient(to right, #f59e0b, #d97706); color: #1a1300; box-shadow: 0 8px 24px rgba(245,158,11,0.25); }
+        .best-cta:hover { filter: brightness(1.08); }
+
+        /* progress */
+        .progress-wrap { padding: 8px 4px; }
+        .progress-head { display: flex; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 14px; margin-bottom: 12px; }
+        .bar { max-width: 280px; margin: 0 auto; height: 6px; border-radius: 999px; background: rgba(255,255,255,0.05); overflow: hidden; }
+        .bar > span { display: block; height: 100%; width: 0; background: linear-gradient(to right, var(--cyan), var(--emerald)); transition: width 0.5s; }
+        .progress-meta { text-align: center; font-size: 11px; color: var(--dim); margin-top: 8px; font-variant-numeric: tabular-nums; }
+        .progress-meta strong { color: var(--cyan); }
+
+        .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.1); border-top-color: var(--cyan); border-radius: 50%; animation: spin 0.8s linear infinite; vertical-align: middle; }
+        .spinner.sm { width: 12px; height: 12px; }
         @keyframes spin { to { transform: rotate(360deg); } }
 
-        .error-msg {
-            color: #f85149;
-            text-align: center;
-            padding: 16px;
-            font-size: 14px;
+        /* anchor */
+        .row-between { display: flex; align-items: center; justify-content: space-between; gap: 8px; flex-wrap: wrap; }
+        .seg {
+            display: inline-flex; border-radius: 9px; background: rgba(0,0,0,0.4);
+            border: 1px solid var(--border); overflow: hidden; padding: 2px; font-size: 11px; font-weight: 700;
         }
-
-        .updated {
-            text-align: center;
-            font-size: 12px;
-            color: #484f58;
-            margin-top: 4px;
+        .seg button {
+            padding: 5px 12px; border-radius: 7px; border: none; background: none; cursor: pointer;
+            color: var(--muted); transition: all 0.15s; font-weight: 700;
         }
-
-        .refresh-btn {
-            background: none;
-            border: 1px solid #30363d;
-            color: #8b949e;
-            border-radius: 6px;
-            padding: 4px 10px;
-            font-size: 12px;
-            cursor: pointer;
-            margin-left: 8px;
-            transition: all 0.2s;
+        .seg button.active { background: var(--cyan); color: #04121a; }
+        .anchor-val { font-size: 34px; font-weight: 800; color: var(--cyan); letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+        .anchor-sub { font-size: 13px; color: var(--dim); }
+        .src-row { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; font-size: 12px; color: var(--dim); }
+        .src-row strong { color: #cbd5e1; }
+        .clean-zone {
+            margin-top: 14px; padding: 11px 14px; border-radius: 11px;
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
+            font-size: 13px; line-height: 1.6; color: var(--muted);
         }
+        .overheat { margin-top: 8px; font-size: 11px; color: var(--dim); }
+        .overheat a { color: var(--cyan); cursor: pointer; text-decoration: underline; }
 
-        .refresh-btn:hover { border-color: #58a6ff; color: #58a6ff; }
-
-        footer {
-            margin-top: auto;
-            padding-top: 32px;
-            text-align: center;
-            font-size: 11px;
-            color: #484f58;
-            line-height: 1.6;
+        /* keywords */
+        .kw-add { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .kw-add input[type=text] {
+            flex: 1; min-width: 180px; padding: 9px 12px; border-radius: 9px;
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+            color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;
         }
+        .kw-add input[type=text]:focus { border-color: rgba(34,211,238,0.5); }
+        .sev-toggle { display: inline-flex; border-radius: 9px; border: 1px solid var(--border); overflow: hidden; font-size: 12px; }
+        .sev-toggle button { padding: 0 12px; border: none; background: rgba(0,0,0,0.4); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+        .sev-toggle button + button { border-left: 1px solid var(--border); }
+        .sev-toggle button.on-soft { background: rgba(251,191,36,0.15); color: var(--amber); }
+        .sev-toggle button.on-hard { background: rgba(251,113,133,0.15); color: var(--rose); }
+        .btn-add { padding: 0 16px; border-radius: 9px; border: none; background: var(--cyan); color: #04121a; font-size: 14px; font-weight: 700; cursor: pointer; transition: filter 0.15s; }
+        .btn-add:hover { filter: brightness(1.1); }
+        .btn-add:disabled { opacity: 0.4; cursor: not-allowed; }
+        .chips { display: flex; flex-wrap: wrap; gap: 6px; }
+        .chip { display: inline-flex; align-items: center; gap: 5px; padding: 4px 8px; border-radius: 7px; font-size: 11px; font-weight: 600; }
+        .chip.hard { background: rgba(251,113,133,0.15); color: var(--rose); }
+        .chip.soft { background: rgba(251,191,36,0.15); color: var(--amber); }
+        .chip .kw-txt { cursor: pointer; }
+        .chip .kw-txt:hover { text-decoration: underline; }
+        .chip .cnt { padding: 0 5px; border-radius: 4px; font-size: 10px; font-variant-numeric: tabular-nums; }
+        .chip .cnt.hit { background: rgba(255,255,255,0.1); font-weight: 700; }
+        .chip .cnt.miss { background: rgba(120,120,120,0.12); color: var(--dim); }
+        .chip .kw-del { cursor: pointer; opacity: 0.6; margin-left: 2px; }
+        .chip .kw-del:hover { opacity: 1; }
+        .hint { font-size: 11px; color: var(--dim); line-height: 1.6; }
 
-        footer a { color: #58a6ff; text-decoration: none; }
-
-        .note {
-            font-size: 12px;
-            color: #484f58;
-            text-align: center;
-            margin-top: 8px;
-            line-height: 1.5;
-            max-width: 560px;
+        /* reputation filters */
+        .filters-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; font-size: 12px; }
+        @media (min-width: 560px) { .filters-grid { grid-template-columns: repeat(3, 1fr); } }
+        @media (min-width: 720px) { .filters-grid { grid-template-columns: repeat(5, 1fr); } }
+        .filters-grid label {
+            display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 9px;
+            background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05);
+            cursor: pointer; user-select: none; transition: border-color 0.15s;
         }
+        .filters-grid label:hover { border-color: rgba(34,211,238,0.4); }
+        .filters-grid input { accent-color: var(--cyan); }
+        .link-reset { font-size: 11px; color: var(--muted); text-decoration: underline; cursor: pointer; background: none; border: none; }
+        .link-reset:hover { color: #fff; }
 
-        /* Load more button */
+        /* tables */
+        table { width: 100%; border-collapse: collapse; }
+        thead th {
+            text-align: left; font-size: 10px; text-transform: uppercase; letter-spacing: 1.2px;
+            color: var(--dim); font-weight: 700; padding: 0 0 9px; border-bottom: 1px solid rgba(255,255,255,0.06);
+        }
+        thead th:last-child { text-align: right; }
+        tbody td { padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.05); vertical-align: middle; font-size: 14px; }
+        tbody tr:last-child td { border-bottom: none; }
+        tbody tr:hover { background: rgba(255,255,255,0.02); }
+        tbody tr.dim { opacity: 0.6; }
+        .row-flag { display: flex; align-items: center; gap: 6px; margin-bottom: 5px; flex-wrap: wrap; }
+        .nick { color: #fff; text-decoration: none; font-weight: 600; max-width: 110px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+        .nick:hover { color: var(--cyan); }
+        .sell-btn { display: inline-block; padding: 3px 10px; border-radius: 6px; font-size: 11px; font-weight: 700; text-decoration: none; background: rgba(244,63,94,0.9); color: #fff; transition: background 0.2s; }
+        .sell-btn:hover { background: #fb7185; }
+        .sell-btn.orange { background: rgba(251,146,60,0.85); color: #1a0f00; }
+        .sell-btn.orange:hover { background: #fdba74; }
+        .num { font-variant-numeric: tabular-nums; }
+        .price { font-weight: 700; color: #fff; font-variant-numeric: tabular-nums; }
+        .price-dev { font-size: 11px; }
+        .lim { font-size: 11px; color: var(--muted); }
+        .deals-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+        /* badges & tiers */
+        .badge { display: inline-block; font-size: 9px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; padding: 2px 6px; border-radius: 5px; }
+        .badge-best { background: linear-gradient(to right, #10b981, #34d399); color: #04140b; }
+        .badge-bait { background: rgba(251,113,133,0.2); color: var(--rose); }
+        .t-clean { background: rgba(52,211,153,0.15); color: var(--emerald); }
+        .t-acceptable { background: rgba(132,204,22,0.15); color: var(--lime); }
+        .t-suspicious { background: rgba(251,191,36,0.15); color: var(--amber); }
+        .t-dirty { background: rgba(251,113,133,0.15); color: var(--rose); }
+        .t-risky { background: rgba(251,146,60,0.15); color: var(--orange); }
+        .pillbadge { display: inline-block; font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 999px; }
+        .tag { display: inline-block; font-size: 10px; font-weight: 700; padding: 2px 7px; border-radius: 5px; }
+        .tag.hard { background: rgba(251,113,133,0.15); color: var(--rose); }
+        .tag.soft { background: rgba(251,191,36,0.15); color: var(--amber); }
+        .tags-row { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 4px; }
+
+        /* details/collapsible */
+        details { border-radius: 18px; }
+        details.card-d { background: var(--card); border: 1px solid var(--border); padding: 18px 20px; margin-bottom: 16px; backdrop-filter: blur(18px); }
+        details.risky-d { background: rgba(251,146,60,0.04); border: 1px solid rgba(251,146,60,0.2); padding: 18px 20px; margin-bottom: 16px; backdrop-filter: blur(18px); }
+        summary { cursor: pointer; font-weight: 700; font-size: 14px; list-style: none; display: flex; align-items: center; gap: 8px; user-select: none; }
+        summary::-webkit-details-marker { display: none; }
+        summary .arr { transition: transform 0.2s; font-family: monospace; }
+        details[open] summary .arr { transform: rotate(90deg); }
+        summary.risky { color: var(--orange); }
+        summary.dirty { color: var(--rose); }
+        summary.calc { color: var(--cyan); justify-content: center; }
+        summary .sm { font-size: 11px; color: var(--dim); font-weight: 400; }
+
+        .info-box { margin-top: 14px; padding: 11px 14px; border-radius: 11px; font-size: 12px; line-height: 1.6; }
+        .info-orange { background: rgba(251,146,60,0.1); border: 1px solid rgba(251,146,60,0.3); color: #fcd9b6; }
+        .info-orange strong { color: var(--orange); }
+
+        .checks { list-style: none; display: flex; flex-direction: column; gap: 2px; }
+        .checks li { font-size: 10px; display: flex; align-items: flex-start; gap: 6px; line-height: 1.3; }
+        .checks li.ok { color: rgba(52,211,153,0.8); }
+        .checks li.no { color: rgba(251,113,133,0.8); }
+        .checks li.muted { color: var(--dim); font-style: italic; }
+        .checks li .mk { flex-shrink: 0; width: 10px; text-align: center; }
+
         .more-btn {
-            display: block;
-            width: 100%;
-            margin-top: 12px;
-            padding: 10px;
-            background: #21262d;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            color: #8b949e;
-            font-size: 14px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
+            display: block; width: 100%; margin-top: 16px; padding: 10px;
+            border-radius: 11px; border: 1px solid var(--border); background: rgba(255,255,255,0.02);
+            color: #cbd5e1; font-size: 14px; font-weight: 700; cursor: pointer; transition: all 0.2s;
         }
+        .more-btn:hover { border-color: rgba(34,211,238,0.4); color: var(--cyan); background: rgba(255,255,255,0.04); }
+        .more-btn.rose:hover { border-color: rgba(251,113,133,0.4); color: var(--rose); }
 
-        .more-btn:hover {
-            background: #30363d;
-            color: #e6edf3;
-            border-color: #58a6ff;
-        }
+        .empty { text-align: center; font-size: 14px; padding: 16px; }
+        .empty.amber { color: var(--amber); }
+        .empty.rose { color: var(--rose); }
+        .empty.muted { color: var(--muted); }
 
-        /* Calculator */
-        .calc-toggle {
-            cursor: pointer;
-            font-size: 15px;
-            color: #58a6ff;
-            font-weight: 600;
-            list-style: none;
-            padding: 8px 0;
-            text-align: center;
-        }
-
-        .calc-toggle::-webkit-details-marker { display: none; }
-
-        .calc-toggle::before {
-            content: '▸ ';
-            font-family: monospace;
-        }
-
-        details[open] .calc-toggle::before { content: '▾ '; }
-
-        .calc-body {
-            margin-top: 16px;
-        }
-
-        .calc-row {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .calc-field {
-            flex: 1;
-        }
-
-        .calc-field label {
-            display: block;
-            font-size: 12px;
-            color: #8b949e;
-            margin-bottom: 4px;
-        }
-
+        /* calculator */
+        .calc-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 18px; }
+        @media (max-width: 440px) { .calc-grid { grid-template-columns: 1fr; } }
+        .calc-field label { display: block; font-size: 10px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--dim); font-weight: 700; margin-bottom: 6px; }
         .calc-field input, .calc-field select {
-            width: 100%;
-            padding: 10px 12px;
-            background: #0d1117;
-            border: 1px solid #30363d;
-            border-radius: 8px;
-            color: #e6edf3;
-            font-size: 16px;
-            outline: none;
-            transition: border-color 0.2s;
+            width: 100%; padding: 10px 12px; border-radius: 11px;
+            background: rgba(0,0,0,0.4); border: 1px solid var(--border);
+            color: #fff; font-size: 16px; outline: none; transition: border-color 0.2s; font-variant-numeric: tabular-nums;
         }
+        .calc-field input:focus, .calc-field select:focus { border-color: rgba(34,211,238,0.6); }
+        .calc-field select option { background: #0d1117; }
+        .calc-big { text-align: center; padding: 18px 0 8px; margin-top: 14px; border-radius: 16px; background: linear-gradient(to bottom, rgba(255,255,255,0.03), transparent); border: 1px solid rgba(255,255,255,0.05); }
+        .calc-big-num { font-size: 44px; font-weight: 800; letter-spacing: -1px; font-variant-numeric: tabular-nums; }
+        .calc-big-lbl { font-size: 11px; text-transform: uppercase; letter-spacing: 1.5px; color: var(--dim); margin-top: 4px; }
+        .calc-rows { margin-top: 14px; border-radius: 11px; background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.05); padding: 4px 14px; }
+        .calc-rows .r { display: flex; justify-content: space-between; padding: 7px 0; font-size: 13px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .calc-rows .r:last-child { border-bottom: none; }
+        .calc-rows .r .l { color: var(--muted); }
+        .calc-rows .r .v { font-weight: 700; font-variant-numeric: tabular-nums; }
+        .verdict { margin-top: 14px; padding: 11px; border-radius: 11px; text-align: center; font-size: 14px; font-weight: 700; border: 1px solid transparent; }
+        .v-good { background: rgba(52,211,153,0.15); color: var(--emerald); border-color: rgba(52,211,153,0.3); }
+        .v-ok { background: rgba(132,204,22,0.15); color: var(--lime); border-color: rgba(132,204,22,0.3); }
+        .v-warn { background: rgba(251,191,36,0.15); color: var(--amber); border-color: rgba(251,191,36,0.3); }
+        .v-bad { background: rgba(251,113,133,0.15); color: var(--rose); border-color: rgba(251,113,133,0.3); }
 
-        .calc-field input:focus, .calc-field select:focus {
-            border-color: #58a6ff;
-        }
-
-        .calc-field select option {
-            background: #0d1117;
-        }
-
-        .calc-result {
-            background: #0d1117;
-            border-radius: 10px;
-            padding: 16px;
-            margin-top: 8px;
-        }
-
-        .calc-result-row {
-            display: flex;
-            justify-content: space-between;
-            padding: 6px 0;
-            font-size: 14px;
-            border-bottom: 1px solid #21262d;
-        }
-
-        .calc-result-row:last-child { border-bottom: none; }
-
-        .calc-result-row .label { color: #8b949e; }
-        .calc-result-row .value { font-weight: 600; }
-
-        .calc-big {
-            text-align: center;
-            padding: 16px 0 8px;
-        }
-
-        .calc-big-num {
-            font-size: 36px;
-            font-weight: 700;
-            color: #3fb950;
-        }
-
-        .calc-big-label {
-            font-size: 13px;
-            color: #8b949e;
-            margin-top: 4px;
-        }
-
-        .calc-verdict {
-            text-align: center;
-            margin-top: 12px;
-            padding: 10px;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
-        }
-
-        .verdict-good { background: #0d2818; color: #3fb950; }
-        .verdict-ok { background: #1a1f00; color: #a5d64e; }
-        .verdict-bad { background: #2d0a0a; color: #f85149; }
-        .verdict-warn { background: #2a1f00; color: #d29922; }
-
-        @media (max-width: 420px) {
-            .best-price { font-size: 40px; }
-            .fair-value { font-size: 22px; }
-            .offers-table { font-size: 13px; }
-            .calc-row { flex-direction: column; gap: 8px; }
-            .calc-big-num { font-size: 28px; }
-        }
+        /* footer */
+        .updated { text-align: center; font-size: 12px; color: var(--dim); margin-top: 18px; }
+        .refresh-btn { margin-left: 8px; padding: 4px 12px; border-radius: 7px; border: 1px solid var(--border); background: rgba(255,255,255,0.02); color: var(--muted); font-size: 12px; cursor: pointer; transition: all 0.2s; }
+        .refresh-btn:hover { border-color: rgba(34,211,238,0.4); color: var(--cyan); }
+        footer { text-align: center; font-size: 11px; color: var(--dim); margin-top: 20px; line-height: 1.7; }
+        footer a { color: var(--blue); text-decoration: none; }
+        .note { text-align: center; font-size: 11px; color: var(--dim); margin-top: 12px; line-height: 1.7; }
+        .note strong.e { color: var(--emerald); }
+        .note strong.l { color: var(--lime); }
+        .note strong.o { color: var(--orange); }
+        .hidden { display: none !important; }
     </style>
 </head>
 <body>
-    <h1>USDT Fair Rate</h1>
-    <p class="subtitle">Продажа USDT &rarr; Сбербанк (RUB)</p>
+    <div class="mesh"><i></i><i></i><i></i></div>
 
-    <div class="warning-banner">
-        <strong>&#9888; Осторожно:</strong> офферы <strong>выше fair rate</strong> = грязный трафик (казино, процессинг, дропы). Через месяц-год &mdash; <strong>ст. 161 УК РФ</strong>. Реально чистый курс &mdash; <strong>96&ndash;98% от fair</strong> (только через личных контрагентов). На Bybit P2P самые адекватные &mdash; те, что ниже всех, с высоким % завершения.
-    </div>
-
-    <!-- Best SAFE offer -->
-    <div class="card best-offer" id="best-card">
-        <div class="loading" id="loading"><span class="spinner"></span>Загрузка офферов Bybit...</div>
-        <div id="best-content" style="display:none">
-            <h2 id="best-title">Лучший безопасный оффер</h2>
-            <div class="best-price" id="best-price">—</div>
-            <span class="best-currency">₽ за 1 USDT</span>
-            <div class="best-meta">
-                <strong id="best-nick">—</strong> &middot;
-                <span id="best-orders">—</span> сделок &middot;
-                <span id="best-completion">—</span>% завершено
+    <div class="wrap">
+        <!-- Hero -->
+        <div class="hero">
+            <div class="pill">
+                <span class="dot"></span>
+                <span class="lbl">USDT · RUB · Sberbank</span>
             </div>
-            <div class="best-meta">
-                Лимит: <span id="best-limit">—</span> ₽
-            </div>
-            <div class="best-deviation" id="best-dev">—</div>
-            <div class="best-trust" id="best-trust"></div>
-            <a class="best-link" id="best-link" href="#" target="_blank">Продать USDT этому покупателю</a>
+            <h1>P2P Fair Rate</h1>
+            <p class="subtitle">Продажа USDT &rarr; Сбербанк без грязных денег</p>
         </div>
-        <div class="error-msg" id="error" style="display:none"></div>
-    </div>
 
-    <!-- Fair rate -->
-    <div class="card" id="fair-card" style="display:none">
-        <h2>Справедливый курс (ЦБ &times; USDT)</h2>
-        <div class="fair-row">
-            <div>
-                <span class="fair-value" id="fair-rate">—</span>
-                <span class="fair-sub"> ₽ / USDT</span>
+        <!-- Warning -->
+        <div class="warn">
+            <div class="ico">&#9888;</div>
+            <div class="txt">
+                Офферы <strong>выше fair rate</strong> = грязный трафик (казино, процессинг, дропы). Через месяц-год &mdash; <strong>ст. 161 УК РФ</strong>, заморозка по 161-ФЗ. Чистый курс = <strong>96&ndash;98% от fair</strong>. Ищем мейкеров с верификацией банка, completion &ge;99% и историей без смены ника.
             </div>
         </div>
-        <div class="fair-sources">
-            <span>USD/RUB ЦБ: <strong id="cbr-rate">—</strong></span>
-            <span>USDT/USD: <strong id="usdt-price">—</strong></span>
-        </div>
-        <div class="safe-range" id="safe-range"></div>
-    </div>
 
-    <!-- Safe offers -->
-    <div class="card" id="safe-card" style="display:none">
-        <h2 id="safe-title">Безопасные офферы</h2>
-        <table class="offers-table">
-            <thead>
-                <tr>
-                    <th>Продавец</th>
-                    <th>Цена</th>
-                    <th>Лимит</th>
-                    <th>Сделки</th>
-                </tr>
-            </thead>
-            <tbody id="safe-body"></tbody>
-        </table>
-        <div id="no-safe" style="display:none; text-align:center; color:#d29922; padding:16px; font-size:14px;">
-            Безопасных офферов сейчас нет. Все текущие предложения выше порога риска.
+        <!-- Best offer / progress -->
+        <div class="card best" id="best-card">
+            <div class="progress-wrap" id="progress">
+                <div class="progress-head">
+                    <span class="spinner"></span>
+                    <span id="progress-text">Опрашиваем Bybit P2P…</span>
+                </div>
+                <div class="bar"><span id="progress-bar"></span></div>
+                <div class="progress-meta" id="progress-meta">инициализация…</div>
+            </div>
+            <div id="best-content" class="hidden"></div>
+            <div id="best-error" class="hidden empty rose"></div>
         </div>
-        <button class="more-btn" id="safe-more" style="display:none">Загрузить ещё</button>
-    </div>
 
-    <!-- Dirty offers (collapsed) -->
-    <div class="card" id="dirty-card" style="display:none">
-        <details>
-            <summary class="dirty-toggle">
-                <span id="dirty-count">0</span> подозрительных офферов (возможно грязные деньги)
+        <!-- Anchor -->
+        <div class="card hidden" id="anchor-card">
+            <div class="row-between" style="margin-bottom:12px">
+                <div class="card-label">Эталон для фильтра</div>
+                <div class="seg" id="anchor-seg">
+                    <button data-anchor="market">P2P медиана</button>
+                    <button data-anchor="cbr" class="active">ЦБ × USDT</button>
+                </div>
+            </div>
+            <div style="display:flex; align-items:baseline; gap:8px">
+                <span class="anchor-val" id="anchor-val">—</span>
+                <span class="anchor-sub" id="anchor-lbl">₽ / USDT</span>
+            </div>
+            <div class="src-row" id="src-row"></div>
+            <div class="clean-zone" id="clean-zone"></div>
+            <div class="overheat hidden" id="overheat"></div>
+        </div>
+
+        <!-- Custom keywords -->
+        <div class="card hidden" id="kw-card">
+            <div class="row-between" style="margin-bottom:12px">
+                <div class="card-label">Свои ключевые слова <span id="kw-count" style="color:var(--cyan)"></span></div>
+                <span class="hint">ищется как подстрока в remark</span>
+            </div>
+            <div class="kw-add">
+                <input type="text" id="kw-input" placeholder="напр. перевод 3-м лицам" maxlength="80">
+                <div class="sev-toggle" id="kw-sev">
+                    <button data-sev="soft">мягкий</button>
+                    <button data-sev="hard" class="on-hard">жёсткий</button>
+                </div>
+                <button class="btn-add" id="kw-add-btn" disabled>Добавить</button>
+            </div>
+            <div class="chips" id="kw-chips"></div>
+            <div class="hint hidden" id="kw-empty">
+                Жёсткий — оффер автоматом улетает в «грязные» при совпадении. Мягкий — просто метка. Поиск без учёта регистра, по подстроке. Цифра у чипа — сколько текущих офферов содержат подстроку.
+            </div>
+        </div>
+
+        <!-- Reputation filters -->
+        <div class="card hidden" id="filters-card">
+            <div class="row-between" style="margin-bottom:12px">
+                <div class="card-label">Скрипт-проверки репутации <span id="filters-active" class="hidden" style="color:var(--cyan); letter-spacing:0">активно</span></div>
+                <button class="link-reset hidden" id="filters-reset">сбросить</button>
+            </div>
+            <div class="filters-grid">
+                <label><input type="checkbox" data-filter="bankAccount"> банк верифицирован</label>
+                <label><input type="checkbox" data-filter="completion"> completion ≥99%</label>
+                <label><input type="checkbox" data-filter="totalDeals"> сделок ≥3000</label>
+                <label><input type="checkbox" data-filter="known14"> знаком ≥14 дней</label>
+                <label><input type="checkbox" data-filter="trust80"> trust &gt; 80/100</label>
+            </div>
+            <div class="hint" style="margin-top:10px">
+                Фильтры накладываются на обе таблицы. «Банк верифицирован» = authTag содержит BA. «Знаком ≥14 дней» считается с первого визита на этой странице (история копится локально в браузере) — поначалу режет почти всех, через пару недель начнёт пропускать проверенных ветеранов.
+            </div>
+        </div>
+
+        <!-- Safe offers -->
+        <div class="card hidden" id="safe-card">
+            <div class="row-between" style="margin-bottom:12px">
+                <div class="card-label">Безопасные офферы <span id="safe-count" style="color:#cbd5e1; letter-spacing:0"></span></div>
+                <div style="font-size:10px; color:var(--dim); display:flex; gap:12px">
+                    <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--emerald);box-shadow:0 0 6px rgba(52,211,153,.6)"></span> чисто <span id="clean-n">0</span></span>
+                    <span><span style="display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--lime)"></span> допустимо <span id="acc-n">0</span></span>
+                </div>
+            </div>
+            <div id="safe-empty" class="hidden"></div>
+            <table id="safe-table" class="hidden">
+                <thead><tr><th>Продавец</th><th>Цена</th><th>Лимит</th><th>Сделки</th></tr></thead>
+                <tbody id="safe-body"></tbody>
+            </table>
+            <button class="more-btn hidden" id="safe-more">Загрузить ещё</button>
+        </div>
+
+        <!-- Risky overlay -->
+        <details class="risky-d hidden" id="risky-d">
+            <summary class="risky">
+                <span class="arr">&#9656;</span>
+                Рискованно — <span id="risky-count">0</span> офферов выше медианы/ЦБ
+                <span class="sm">(жёстко отфильтрованы по репутации)</span>
             </summary>
-            <table class="offers-table" style="margin-top:12px">
-                <thead>
-                    <tr>
-                        <th>Продавец</th>
-                        <th>Цена</th>
-                        <th>Лимит</th>
-                        <th>Сделки</th>
-                    </tr>
-                </thead>
+            <div class="info-box info-orange">
+                <strong>Тебе решать.</strong> Цена выше и P2P-медианы, и ЦБ — потенциально грязный трафик. Но у этих продавцов completion ≥99%, ≥3000 сделок, ≥100 свежих ордеров и верификация ≥L2. Это минимизирует, но не обнуляет риск ст. 161/174 УК РФ при полугодичной ретроспективе.
+            </div>
+            <div id="risky-empty" class="hidden empty amber"></div>
+            <table id="risky-table" style="margin-top:14px">
+                <thead><tr><th>Продавец</th><th>Цена</th><th>Скрипт-проверки</th><th>Сделки</th></tr></thead>
+                <tbody id="risky-body"></tbody>
+            </table>
+        </details>
+
+        <!-- Suspicious + dirty -->
+        <details class="card-d hidden" id="dirty-d">
+            <summary class="dirty">
+                <span class="arr">&#9656;</span>
+                + <span id="sd-count">0</span> подозрительных / грязных
+                <span class="sm" id="sd-breakdown"></span>
+            </summary>
+            <table style="margin-top:14px">
+                <thead><tr><th>Продавец</th><th>Цена</th><th>Лимит</th><th>Сделки</th></tr></thead>
                 <tbody id="dirty-body"></tbody>
             </table>
-            <button class="more-btn" id="dirty-more" style="display:none">Загрузить ещё</button>
+            <button class="more-btn rose hidden" id="dirty-more">Загрузить ещё</button>
         </details>
-    </div>
 
-    <div class="updated" id="updated"></div>
-    <p class="note">Цена &mdash; <strong>минимальная</strong> из всех объявлений мерчанта (реальный курс, а не завышенный). Подозрительные свёрнуты. "Безопасный" = &ge;95% завершения, &ge;50 сделок, цена в чистой зоне.</p>
-
-    <!-- P2P Calculator -->
-    <div class="card" id="calc-card" style="display:none; max-width:560px;">
-        <details>
-            <summary class="calc-toggle">Калькулятор выгодности P2P</summary>
-            <div class="calc-body">
-                <div class="calc-row">
-                    <div class="calc-field">
-                        <label>Сумма USDT</label>
-                        <input type="number" id="calc-usdt" placeholder="1000" value="1000" oninput="calcUpdate()">
-                    </div>
-                    <div class="calc-field">
-                        <label>Курс продажи (₽)</label>
-                        <input type="number" id="calc-price" placeholder="79.50" step="0.01" oninput="calcUpdate()">
-                    </div>
+        <!-- Calculator -->
+        <details class="card-d hidden" id="calc-d">
+            <summary class="calc"><span class="arr">&#9656;</span> Калькулятор выгодности P2P</summary>
+            <div class="calc-grid">
+                <div class="calc-field">
+                    <label>Сумма USDT</label>
+                    <input type="number" id="calc-usdt" value="1000" placeholder="1000">
                 </div>
-                <div class="calc-row">
-                    <div class="calc-field">
-                        <label>Сравнить с</label>
-                        <select id="calc-compare" onchange="calcUpdate()">
-                            <option value="fair">Fair Rate (ЦБ × USDT)</option>
-                            <option value="best">Лучший безопасный оффер</option>
-                            <option value="custom">Другой курс...</option>
-                        </select>
-                    </div>
-                    <div class="calc-field" id="calc-custom-wrap" style="display:none">
-                        <label>Свой курс (₽)</label>
-                        <input type="number" id="calc-custom" placeholder="80.00" step="0.01" oninput="calcUpdate()">
-                    </div>
+                <div class="calc-field">
+                    <label>Курс продажи (₽)</label>
+                    <input type="number" id="calc-price" step="0.01" placeholder="79.50">
                 </div>
-
-                <div class="calc-big">
-                    <div class="calc-big-num" id="calc-rub">—</div>
-                    <div class="calc-big-label">Вы получите рублей</div>
-                </div>
-
-                <div class="calc-result" id="calc-details">
-                    <div class="calc-result-row">
-                        <span class="label">По fair rate</span>
-                        <span class="value" id="calc-fair-rub">—</span>
-                    </div>
-                    <div class="calc-result-row">
-                        <span class="label">Разница</span>
-                        <span class="value" id="calc-diff">—</span>
-                    </div>
-                    <div class="calc-result-row">
-                        <span class="label">Отклонение от fair</span>
-                        <span class="value" id="calc-pct">—</span>
-                    </div>
-                    <div class="calc-result-row">
-                        <span class="label">По лучшему безопасному</span>
-                        <span class="value" id="calc-best-rub">—</span>
-                    </div>
-                    <div class="calc-result-row">
-                        <span class="label">Разница с лучшим</span>
-                        <span class="value" id="calc-best-diff">—</span>
-                    </div>
-                </div>
-
-                <div class="calc-verdict" id="calc-verdict"></div>
             </div>
-        </details>
-    </div>
+            <div class="calc-field" style="margin-top:12px">
+                <label>Сравнить с</label>
+                <select id="calc-compare">
+                    <option value="fair">Fair Rate (ЦБ × USDT)</option>
+                    <option value="best">Лучший безопасный оффер</option>
+                    <option value="custom">Другой курс...</option>
+                </select>
+            </div>
+            <div class="calc-field hidden" id="calc-custom-wrap" style="margin-top:12px">
+                <label>Свой курс (₽)</label>
+                <input type="number" id="calc-custom" step="0.01" placeholder="80.00">
+            </div>
 
-    <footer>
-        Источники: <a href="https://www.cbr-xml-daily.ru/" target="_blank">ЦБ РФ</a> &middot;
-        <a href="https://www.coingecko.com/" target="_blank">CoinGecko</a> &middot;
-        <a href="https://www.bybit.com/fiat/trade/otc" target="_blank">Bybit P2P</a><br>
-        Не является финансовой рекомендацией
-    </footer>
+            <div class="calc-big">
+                <div class="calc-big-num" id="calc-rub">—</div>
+                <div class="calc-big-lbl">Вы получите рублей</div>
+            </div>
+
+            <div class="calc-rows">
+                <div class="r"><span class="l">По fair rate (ЦБ)</span><span class="v" id="calc-fair-rub">—</span></div>
+                <div class="r"><span class="l">Разница</span><span class="v" id="calc-diff">—</span></div>
+                <div class="r"><span class="l">Отклонение от эталона</span><span class="v" id="calc-pct">—</span></div>
+                <div class="r" id="calc-best-row"><span class="l">По лучшему безопасному</span><span class="v" id="calc-best-rub">—</span></div>
+                <div class="r" id="calc-bestdiff-row"><span class="l">Разница с лучшим</span><span class="v" id="calc-best-diff">—</span></div>
+            </div>
+
+            <div class="verdict hidden" id="calc-verdict"></div>
+        </details>
+
+        <div class="updated" id="updated"></div>
+
+        <p class="note">
+            Цена — <strong style="color:#cbd5e1">минимальная</strong> из всех объявлений мерчанта.
+            <strong class="e">Чисто</strong> = -2..-5% от ЦБ, ≥95% completion, ≥50 сделок.
+            <strong class="l">Допустимо</strong> = 0..-2% от ЦБ, ≥98% completion, ≥500 сделок.
+            <strong class="o">Рискованно</strong> = выше медианы и ЦБ (до +2%), completion ≥99%, ≥3000 сделок, ≥100 свежих, верификация ≥L2.
+        </p>
+
+        <footer>
+            Источники: <a href="https://www.cbr-xml-daily.ru/" target="_blank" rel="noopener">ЦБ РФ</a> &middot;
+            <a href="https://www.coingecko.com/" target="_blank" rel="noopener">CoinGecko</a> &middot;
+            <a href="https://www.bybit.com/fiat/trade/otc" target="_blank" rel="noopener">Bybit P2P</a><br>
+            Не является финансовой рекомендацией
+        </footer>
+    </div>
 
     <script>
+    (function () {
+        'use strict';
         const $ = id => document.getElementById(id);
-        const PROXY = 'https://corsproxy.io/?url=';
+        const CORS_PROXY = 'https://corsproxy.io/?url=';
+        const BYBIT_URL = 'https://api2.bybit.com/fiat/otc/item/online';
+        const PAGE_SIZE = 10;
+        const BYBIT_MAX_PAGES = 200;
 
-        async function proxiedGet(url) {
-            const r = await fetch(PROXY + encodeURIComponent(url));
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.json();
-        }
-
-        async function proxiedPost(url, body) {
-            const r = await fetch(PROXY + encodeURIComponent(url), {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(body)
-            });
-            if (!r.ok) throw new Error('HTTP ' + r.status);
-            return r.json();
-        }
-
-        async function fetchCBR() {
-            return (await proxiedGet('https://www.cbr-xml-daily.ru/daily_json.js')).Valute.USD.Value;
-        }
-
-        async function fetchUSDT() {
-            return (await proxiedGet('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd')).tether.usd;
-        }
-
-        // Incremental P2P loader — fetches pages on demand
-        const p2p = {
-            byUser: new Map(),   // userId → item with lowest price
-            nextPage: 1,
-            done: false,         // no more pages from API
-            fairRate: 0,
-
-            reset() {
-                this.byUser = new Map();
-                this.nextPage = 1;
-                this.done = false;
-            },
-
-            // Load pages until we have at least `need` NEW safe offers (or run out)
-            async loadUntilSafe(need) {
-                let newSafe = 0;
-                const prevSafe = this.getSafe().length;
-
-                while (!this.done && newSafe < need) {
-                    const data = await proxiedPost('https://api2.bybit.com/fiat/otc/item/online', {
-                        tokenId: 'USDT', currencyId: 'RUB', payment: ['14'],
-                        side: '0', size: '20', page: String(this.nextPage), amount: ''
-                    });
-                    this.nextPage++;
-
-                    if (data.ret_code !== 0) { this.done = true; break; }
-                    const items = data.result.items || [];
-                    if (items.length === 0) { this.done = true; break; }
-
-                    for (const item of items) {
-                        const price = parseFloat(item.price);
-                        const uid = item.userId;
-                        if (!this.byUser.has(uid) || price < parseFloat(this.byUser.get(uid).price)) {
-                            this.byUser.set(uid, item);
-                        }
-                    }
-
-                    // Stop if below 93% of fair
-                    const minPrice = Math.min(...items.map(i => parseFloat(i.price)));
-                    if (this.fairRate && minPrice < this.fairRate * 0.93) { this.done = true; break; }
-
-                    newSafe = this.getSafe().length - prevSafe;
-                }
-
-                return this.getAll();
-            },
-
-            getAll() {
-                const arr = Array.from(this.byUser.values());
-                arr.sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
-                return arr;
-            },
-
-            getSafe() {
-                return this.getAll().filter(o => isSafe(o, this.fairRate));
-            },
-
-            getDirty() {
-                return this.getAll().filter(o => isDirty(o, this.fairRate));
-            }
+        // ---------- state ----------
+        const state = {
+            cbrRate: 0,
+            usdtPrice: 0,
+            offers: [],            // best-per-user items, sorted price DESC
+            anchor: 'cbr',
+            safeShown: PAGE_SIZE,
+            dirtyShown: PAGE_SIZE,
+            loading: true,
+            error: null,
+            updatedAt: null,
+            poll: { active: false, page: 0, totalPages: 90, itemsFound: 0, startedAt: 0 },
+            filters: { bankAccount: false, completion: false, totalDeals: false, known14: false, trust80: false },
+            customKeywords: [],
         };
 
-        function profileUrl(o) {
-            return 'https://www.bybit.com/ru-RU/p2p/profile/' + o.userMaskId + '/USDT/RUB/item';
+        // loader internals
+        const byUser = new Map();        // uid -> best (lowest price) item
+        const pricesByUser = new Map();  // uid -> number[] (all prices this pass, for bait)
+        let nextPage = 1;
+        let done = false;
+        let loadingPages = false;
+
+        const cbrFairRate = () => state.cbrRate * state.usdtPrice;
+        const marketRate = () => {
+            const p = state.offers.map(o => parseFloat(o.price)).filter(n => n > 0).sort((a, b) => a - b);
+            return p.length ? p[Math.floor(p.length / 2)] : 0;
+        };
+        const anchorRate = () => state.anchor === 'cbr' ? cbrFairRate() : marketRate();
+        const anchorLabel = () => state.anchor === 'cbr' ? 'ЦБ × USDT' : 'P2P медиана';
+
+        // ---------- seller history (localStorage — replaces server snapshotter) ----------
+        const HIST_KEY = 'fs_p2p_seller_hist';
+        const SNAP_GAP_MS = 30 * 60 * 1000;   // count a fresh snapshot at most every 30 min
+        let history = {};
+        try { history = JSON.parse(localStorage.getItem(HIST_KEY) || '{}') || {}; } catch (e) { history = {}; }
+
+        function saveHistory() {
+            try { localStorage.setItem(HIST_KEY, JSON.stringify(history)); } catch (e) {}
         }
 
+        // record current pass into history (cross-visit accumulation)
+        function recordSnapshot(offers) {
+            const now = Date.now();
+            for (const o of offers) {
+                const uid = o.userId;
+                const fin = Number(o.finishNum) || 0;
+                const nick = o.nickName || null;
+                let h = history[uid];
+                if (!h) {
+                    history[uid] = { fs: now, ls: now, nf: fin, nl: fin, nk: nick, nc: 0, sn: 1 };
+                    continue;
+                }
+                // always refresh latest finish/nick/seen
+                h.nl = fin;
+                // nick change detection
+                if (nick && h.nk && nick !== h.nk) h.nc = (h.nc || 0) + 1;
+                if (nick) h.nk = nick;
+                // count as a new snapshot only after a gap (so refresh spam ≠ 100 snapshots)
+                if (now - (h.ls || 0) >= SNAP_GAP_MS) { h.sn = (h.sn || 1) + 1; }
+                h.ls = now;
+            }
+            saveHistory();
+        }
+
+        // derive SellerHistory-like object for an offer
+        function histFor(o) {
+            const h = history[o.userId];
+            if (!h) return { known: false };
+            const now = Date.now();
+            const daysObserved = Math.floor((now - h.fs) / 86400000);
+            return {
+                known: true,
+                days_observed: daysObserved,
+                snapshots: h.sn || 1,
+                nick_changes: h.nc || 0,
+                latest_nick: h.nk || null,
+                finish_num_delta: (h.nl != null && h.nf != null) ? h.nl - h.nf : null,
+            };
+        }
+
+        // bait info from CURRENT pass (ad_count + price spread for this seller)
+        function baitFor(o) {
+            const plist = pricesByUser.get(o.userId) || [];
+            if (plist.length < 2) return { ad_count: plist.length, min_price: plist[0] || null, max_price: plist[0] || null, bait_spread_pct: null, bait_detected: false };
+            const min = Math.min(...plist), max = Math.max(...plist);
+            const spread = min > 0 ? ((max - min) / min) * 100 : 0;
+            return { ad_count: plist.length, min_price: min, max_price: max, bait_spread_pct: spread, bait_detected: spread > 5 };
+        }
+
+        // ---------- remark red-flag tags ----------
+        const REMARK_TAGS = [
+            { re: /карт\S*\s+довер|довер\S*\s+лиц/i, label: 'с карт доверенных лиц', cls: 'hard', severity: 'hard' },
+            { re: /только\s+славян|\bславянам?\b/i, label: 'только славяне', cls: 'soft', severity: 'soft' },
+            { re: /мог(?:у|ут|ли)\s+запрос/i, label: 'могу запросить', cls: 'hard', severity: 'hard' },
+            { re: /подтвер[дж]\w*\s+получ/i, label: 'подтвердить получение', cls: 'hard', severity: 'hard' },
+            { re: /нескольк\w*\s+плат/i, label: 'несколько платежей', cls: 'soft', severity: 'soft' },
+            { re: /нескольк\w*\s+перевод/i, label: 'несколько переводов', cls: 'soft', severity: 'soft' },
+        ];
+
+        // ---------- custom keywords (localStorage) ----------
+        const KW_KEY = 'fs_p2p_custom_keywords';
+        try {
+            const raw = localStorage.getItem(KW_KEY);
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed)) state.customKeywords = parsed.filter(k => k && typeof k.text === 'string');
+            }
+        } catch (e) {}
+        function saveKeywords() { try { localStorage.setItem(KW_KEY, JSON.stringify(state.customKeywords)); } catch (e) {} }
+        function makeId() {
+            return (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).slice(2) + Date.now().toString(36);
+        }
+
+        function extractRemarkTags(remark) {
+            if (!remark) return [];
+            const txt = remark.toLowerCase().replace(/\s+/g, ' ');
+            const out = [];
+            for (const t of REMARK_TAGS) if (t.re.test(txt)) out.push({ label: t.label, cls: t.cls, severity: t.severity });
+            for (const k of state.customKeywords) {
+                const needle = k.text.toLowerCase();
+                if (needle && txt.includes(needle)) out.push({ label: k.text, cls: k.severity === 'hard' ? 'hard' : 'soft', severity: k.severity });
+            }
+            return out;
+        }
+        function hasHardFlag(remark) { return extractRemarkTags(remark).some(t => t.severity === 'hard'); }
+
+        // ---------- offer helpers ----------
         function completionRate(o) {
-            return o.orderNum > 0 ? (o.finishNum / o.orderNum) : 0;
+            const fin = Number(o.finishNum) || 0, tot = Number(o.orderNum) || 0;
+            return tot > 0 ? fin / tot : 0;
         }
-
-        // Is the offer suspicious? (dirty money risk)
-        // side=0 gives BUYERS sorted high→low. Top = 93+ (dirty casino/processing).
-        // Clean rate confirmed by traders: 96-98% of fair (~79₽ at fair 81).
-        // Above fair = definitely dirty. Above 98% of fair = very likely dirty.
-        function isDirty(o, fairRate) {
-            const price = parseFloat(o.price);
-            const pct = ((price - fairRate) / fairRate) * 100;
-            const comp = completionRate(o) * 100;
-            const finished = parseInt(o.finishNum) || 0;
-
-            // Above fair rate = definitely dirty
-            if (pct > 0) return true;
-            // Above 98% of fair = very likely dirty (only 2% spread)
-            if (pct > -2) return true;
-            // Very low completion = unreliable
-            if (comp < 85) return true;
-            // Few deals + close to fair
-            if (finished < 30 && pct > -3) return true;
-
-            return false;
-        }
-
-        // Minimum orders the merchant requires from YOU
         function minOrdersRequired(o) {
             const tp = o.tradingPreferenceSet || {};
             if (tp.hasOrderFinishNumberDay30 === 1) return tp.orderFinishNumberDay30 || 0;
             return 0;
         }
+        function isAccessible(o) { return minOrdersRequired(o) <= 5; }
+        function hasAuthTag(o, tag) { return Array.isArray(o.authTag) && o.authTag.includes(tag); }
 
-        // Can you actually trade with this merchant? (< 5 orders/month)
-        function isAccessible(o) {
-            return minOrdersRequired(o) <= 5;
-        }
-
-        // Is the offer safe? Price in clean zone (96-98% of fair), good reputation
-        function isSafe(o, fairRate) {
-            const price = parseFloat(o.price);
-            const pct = ((price - fairRate) / fairRate) * 100;
+        // ---------- 4-tier classifier (CBR-anchored) ----------
+        function classify(o, fair) {
+            if (!fair) return 'suspicious';
+            const p = parseFloat(o.price);
+            const pct = ((p - fair) / fair) * 100;
             const comp = completionRate(o) * 100;
-            const finished = parseInt(o.finishNum) || 0;
-
-            if (!isAccessible(o)) return false;
-            // Clean zone: 2-5% below fair, good completion, decent history
-            return pct <= -2 && pct >= -5 && comp >= 95 && finished >= 50;
+            const fin = Number(o.finishNum) || 0;
+            if (hasHardFlag(o.remark)) return 'dirty';
+            if (pct > 2) return 'dirty';
+            if (pct > 0) return 'suspicious';
+            if (!isAccessible(o)) return 'suspicious';
+            if (pct <= -2 && pct >= -5 && comp >= 95 && fin >= 50) return 'clean';
+            if (pct > -2 && pct <= 0 && comp >= 98 && fin >= 500) return 'acceptable';
+            return 'suspicious';
         }
+        const TIER_META = {
+            clean: { label: 'чисто', cls: 't-clean' },
+            acceptable: { label: 'допустимо', cls: 't-acceptable' },
+            suspicious: { label: 'подозрит.', cls: 't-suspicious' },
+            dirty: { label: 'грязно', cls: 't-dirty' },
+        };
 
         function trustScore(o) {
-            let score = 0;
+            let s = 0;
             const comp = completionRate(o);
-            const finished = parseInt(o.finishNum) || 0;
-            const recent = parseInt(o.recentOrderNum) || 0;
-            const recentRate = parseInt(o.recentExecuteRate) || 0;
+            const fin = Number(o.finishNum) || 0;
+            const recent = Number(o.recentOrderNum) || 0;
+            const recentRate = Number(o.recentExecuteRate) || 0;
+            if (comp >= 0.98) s += 35;
+            else if (comp >= 0.95) s += 28;
+            else if (comp >= 0.90) s += 20;
+            else if (comp >= 0.80) s += 10;
+            else s += comp * 5;
+            s += Math.min(fin / 40, 25);
+            s += Math.min(recent / 10, 20);
+            s += Math.min(recentRate * 0.1, 10);
+            if ((o.authStatus || 0) >= 1) s += 5;
+            if ((o.authStatus || 0) >= 2) s += 5;
+            return Math.round(Math.min(s, 100));
+        }
+        function trustCls(s) {
+            if (s >= 80) return 't-clean';
+            if (s >= 60) return 't-acceptable';
+            if (s >= 35) return 't-suspicious';
+            return 't-dirty';
+        }
+        function devCls(pct) {
+            if (pct > 0) return 't-dirty';
+            if (pct > -2) return 't-suspicious';
+            if (pct >= -5) return 't-clean';
+            return 't-acceptable';
+        }
+        function rateCls(pct) {
+            if (pct >= 98) return 't-clean';
+            if (pct >= 95) return 't-acceptable';
+            if (pct >= 85) return 't-suspicious';
+            return 't-dirty';
+        }
+        function fmtNum(n) { return Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 }); }
+        function profileUrl(o) { return 'https://www.bybit.com/ru-RU/p2p/profile/' + o.userMaskId + '/USDT/RUB/item'; }
+        function devPct(o, anchor) { return ((parseFloat(o.price) - anchor) / anchor) * 100; }
 
-            // Completion rate — MUCH heavier weight, harsh penalty below 90%
-            if (comp >= 0.98) score += 35;
-            else if (comp >= 0.95) score += 28;
-            else if (comp >= 0.90) score += 20;
-            else if (comp >= 0.80) score += 10;
-            else score += comp * 5; // 66% = 3.3 pts — trash
-
-            // Total finished orders (0-25 pts)
-            score += Math.min(finished / 40, 25);
-
-            // Recent 30d orders (0-20 pts)
-            score += Math.min(recent / 10, 20);
-
-            // Recent 30d completion rate (0-10 pts)
-            score += Math.min(recentRate * 0.1, 10);
-
-            // KYC (0-10 pts)
-            if (o.authStatus >= 1) score += 5;
-            if (o.authStatus >= 2) score += 5;
-
-            return Math.round(Math.min(score, 100));
+        // ---------- risky-overlay gate ----------
+        const RISKY_GATE = { minCompletion: 99, minTotalDeals: 3000, minRecentOrders: 100, minRecentRate: 99, minLimitMaxRub: 50000 };
+        function scriptRiskChecks(o) {
+            const comp = completionRate(o) * 100;
+            const fin = Number(o.finishNum) || 0;
+            const recent = Number(o.recentOrderNum) || 0;
+            const recentRate = Number(o.recentExecuteRate) || 0;
+            const tags = extractRemarkTags(o.remark);
+            const maxLimit = Number(o.maxAmount) || 0;
+            const authTagList = (o.authTag || []).filter(Boolean);
+            const burstRatio = fin > 0 ? recent / fin : 0;
+            const checks = [
+                { label: 'completion ≥' + RISKY_GATE.minCompletion + '% (' + comp.toFixed(1) + '%)', ok: comp >= RISKY_GATE.minCompletion },
+                { label: 'всего сделок ≥' + RISKY_GATE.minTotalDeals + ' (' + fin + ')', ok: fin >= RISKY_GATE.minTotalDeals },
+                { label: 'свежих ордеров ≥' + RISKY_GATE.minRecentOrders + ' (' + recent + ')', ok: recent >= RISKY_GATE.minRecentOrders },
+                { label: 'свежая успешность ≥' + RISKY_GATE.minRecentRate + '% (' + recentRate.toFixed(1) + '%)', ok: recentRate >= RISKY_GATE.minRecentRate },
+                { label: 'банк верифицирован (' + (authTagList.length ? authTagList.join(',') : 'нет тегов') + ')', ok: hasAuthTag(o, 'BA') },
+                { label: 'без красных флагов в remark', ok: tags.length === 0 },
+                { label: 'доступен (порог ≤5 ордеров)', ok: isAccessible(o) },
+                { label: 'лимит ≥' + RISKY_GATE.minLimitMaxRub.toLocaleString('ru-RU') + ' ₽ (' + fmtNum(maxLimit) + ')', ok: maxLimit >= RISKY_GATE.minLimitMaxRub },
+                { label: 'не burst-активность (свежих/всего ≤40%, сейчас ' + (burstRatio * 100).toFixed(0) + '%)', ok: burstRatio <= 0.4 || fin < 300 },
+            ];
+            const hist = histFor(o);
+            if (hist.known && (hist.days_observed || 0) >= 3) {
+                const days = hist.days_observed || 0;
+                checks.push({ label: 'знаком ≥14 дней (' + days + 'д)', ok: days >= 14 });
+                checks.push({ label: 'ник не менялся (' + hist.nick_changes + ' смен)', ok: hist.nick_changes === 0 });
+                if (hist.finish_num_delta !== null && hist.finish_num_delta !== undefined) {
+                    const perDay = hist.finish_num_delta / Math.max(days, 1);
+                    checks.push({ label: 'рост ≤100 сделок/день (' + perDay.toFixed(0) + '/д)', ok: perDay <= 100 });
+                }
+            }
+            return checks;
         }
 
-        function trustLabel(score) {
-            if (score >= 80) return { cls: 'trust-safe', text: score + '/100' };
-            if (score >= 60) return { cls: 'trust-ok', text: score + '/100' };
-            if (score >= 35) return { cls: 'trust-risky', text: score + '/100' };
-            return { cls: 'trust-danger', text: score + '/100' };
+        // ---------- reputation filters ----------
+        function passesReputationFilter(o) {
+            const f = state.filters;
+            if (f.bankAccount && !hasAuthTag(o, 'BA')) return false;
+            if (f.completion && completionRate(o) * 100 < 99) return false;
+            if (f.totalDeals && (Number(o.finishNum) || 0) < 3000) return false;
+            if (f.trust80 && trustScore(o) <= 80) return false;
+            if (f.known14) {
+                const h = histFor(o);
+                if (!h.known || (h.days_observed || 0) < 14) return false;
+            }
+            return true;
+        }
+        const filterActive = () => Object.values(state.filters).some(Boolean);
+
+        // ---------- derived lists ----------
+        function classified() { const fair = cbrFairRate(); return state.offers.map(o => ({ o, tier: classify(o, fair) })); }
+        function cleanOffers() { return classified().filter(x => x.tier === 'clean').map(x => x.o); }
+        function acceptableOffers() { return classified().filter(x => x.tier === 'acceptable').map(x => x.o); }
+        function safeOffers() { return cleanOffers().concat(acceptableOffers()); }
+        function suspiciousOffers() { return classified().filter(x => x.tier === 'suspicious').map(x => x.o); }
+        function dirtyOffers() { return classified().filter(x => x.tier === 'dirty').map(x => x.o); }
+        function riskyCeiling() {
+            const m = marketRate(), c = cbrFairRate();
+            const byM = m > 0 ? m * 1.03 : 0, byC = c > 0 ? c * 1.05 : 0;
+            const cap = Math.max(byM, byC);
+            return cap || Infinity;
+        }
+        function riskyOffers() {
+            const fair = cbrFairRate(), ceil = riskyCeiling();
+            return state.offers
+                .filter(o => { const p = parseFloat(o.price); return p > fair && p <= ceil && !hasHardFlag(o.remark); })
+                .sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+        }
+        function safeVisible() { return safeOffers().filter(passesReputationFilter); }
+        function riskyVisible() { return riskyOffers().filter(passesReputationFilter); }
+        function bestSafe() { return cleanOffers()[0] || acceptableOffers()[0] || null; }
+        function bestOverall() {
+            const acc = state.offers.filter(isAccessible);
+            if (!acc.length) return null;
+            return acc.slice().sort((a, b) => parseFloat(a.price) - parseFloat(b.price))[0];
+        }
+        function best() { return bestSafe() || bestOverall(); }
+
+        // ---------- fetch ----------
+        async function proxiedGet(url) {
+            const r = await fetch(CORS_PROXY + encodeURIComponent(url));
+            if (!r.ok) throw new Error('HTTP ' + r.status);
+            return r.json();
+        }
+        async function fetchFairRate() {
+            try {
+                const cbr = await proxiedGet('https://www.cbr-xml-daily.ru/daily_json.js');
+                state.cbrRate = Number(cbr.Valute.USD.Value) || 0;
+            } catch (e) { state.error = 'ЦБ недоступен: ' + e.message; }
+            try {
+                const cg = await proxiedGet('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
+                state.usdtPrice = Number(cg.tether.usd) || 1;
+            } catch (e) { state.usdtPrice = 1; }
+        }
+        async function fetchBybitPage(page) {
+            const body = { tokenId: 'USDT', currencyId: 'RUB', payment: ['14'], side: '0', size: '20', page: String(page), amount: '' };
+            const r = await fetch(CORS_PROXY + encodeURIComponent(BYBIT_URL), {
+                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+            });
+            if (!r.ok) throw new Error('corsproxy HTTP ' + r.status);
+            const data = await r.json();
+            if (data.ret_code !== 0) throw new Error('bybit ret_code=' + data.ret_code);
+            return data.result && data.result.items || [];
+        }
+        function refreshOffers() {
+            state.offers = Array.from(byUser.values()).sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
+            state.updatedAt = Date.now();
+        }
+        async function loadUntilSafe(needNewSafe) {
+            if (loadingPages || done) return;
+            loadingPages = true;
+            state.poll.active = true;
+            if (!state.poll.startedAt) state.poll.startedAt = Date.now();
+            const before = safeOffers().length;
+            try {
+                while (!done && (safeOffers().length - before) < needNewSafe && nextPage <= BYBIT_MAX_PAGES) {
+                    const items = await fetchBybitPage(nextPage);
+                    state.poll.page = nextPage;
+                    nextPage++;
+                    if (items.length === 0) { done = true; break; }
+                    for (const it of items) {
+                        const p = parseFloat(it.price);
+                        if (isFinite(p) && p > 0) {
+                            const arr = pricesByUser.get(it.userId) || [];
+                            arr.push(p); pricesByUser.set(it.userId, arr);
+                        }
+                        const prev = byUser.get(it.userId);
+                        if (!prev || p < parseFloat(prev.price)) byUser.set(it.userId, it);
+                    }
+                    state.poll.itemsFound = byUser.size;
+                    refreshOffers();
+                    renderProgress();
+                    const fair = cbrFairRate();
+                    if (fair) {
+                        const minPrice = Math.min.apply(null, items.map(i => parseFloat(i.price)));
+                        if (minPrice < fair * 0.93) { done = true; break; }
+                    }
+                }
+                if (nextPage > BYBIT_MAX_PAGES) done = true;
+            } catch (e) {
+                state.error = e.message || 'Ошибка загрузки';
+            } finally {
+                state.poll.active = false;
+                loadingPages = false;
+            }
         }
 
-        function devClass(pct) {
-            if (pct > 0) return 'dev-bad';     // above fair = dirty
-            if (pct > -2) return 'dev-weak';   // 0 to -2% = dirty zone
-            if (pct >= -5) return 'dev-good';  // -2 to -5% = clean zone
-            return 'dev-ok';                   // below -5% = low but clean
+        // ---------- rendering ----------
+        function el(tag, cls, html) {
+            const e = document.createElement(tag);
+            if (cls) e.className = cls;
+            if (html != null) e.innerHTML = html;
+            return e;
+        }
+        function tagsHtml(o) {
+            const tags = extractRemarkTags(o.remark);
+            if (!tags.length) return '';
+            return '<div class="tags-row">' + tags.map(t => '<span class="tag ' + t.cls + '">' + escapeHtml(t.label) + '</span>').join('') + '</div>';
+        }
+        function escapeHtml(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+        function renderProgress() {
+            const p = state.poll;
+            const pct = p.totalPages ? Math.min(100, Math.round((p.page / p.totalPages) * 100)) : 0;
+            $('progress-bar').style.width = pct + '%';
+            $('progress-text').textContent = p.active ? 'Опрашиваем Bybit P2P…' : 'Загружаем офферы…';
+            if (p.active) {
+                let eta = 0;
+                if (p.page) { const el2 = Date.now() - p.startedAt; eta = Math.round((Math.max(0, p.totalPages - p.page) * (el2 / p.page)) / 1000); }
+                $('progress-meta').innerHTML = 'Страница <strong>' + p.page + '</strong> из ' + p.totalPages +
+                    ' · найдено <strong style="color:var(--emerald)">' + p.itemsFound + '</strong> офферов' + (eta ? ' · ~' + eta + ' сек' : '');
+            } else {
+                $('progress-meta').textContent = 'инициализация…';
+            }
         }
 
-        function rateClass(pct) {
-            if (pct >= 98) return 'rate-high';
-            if (pct >= 95) return 'rate-mid';
-            if (pct >= 85) return 'rate-low';
-            return 'rate-trash';
-        }
-
-        function fmtNum(n) {
-            return Number(n).toLocaleString('ru-RU', { maximumFractionDigits: 0 });
-        }
-
-        // Global state for calculator
-        let gFairRate = 0;
-        let gBestSafePrice = 0;
-
-        function calcUpdate() {
-            const usdt = parseFloat($('calc-usdt').value) || 0;
-            const price = parseFloat($('calc-price').value) || 0;
-            const mode = $('calc-compare').value;
-
-            $('calc-custom-wrap').style.display = mode === 'custom' ? '' : 'none';
-
-            if (!usdt || !price || !gFairRate) {
-                $('calc-rub').textContent = '—';
-                $('calc-verdict').style.display = 'none';
+        function renderBest() {
+            const b = best();
+            const fair = cbrFairRate();
+            if (!b) {
+                $('best-content').innerHTML = '<div style="padding:24px 8px"><div style="font-size:36px;margin-bottom:8px">⛔</div><div style="font-size:18px;font-weight:700;color:var(--rose)">Офферов нет</div><div style="font-size:14px;color:var(--muted);margin-top:8px">Bybit сейчас не отдаёт предложений по Сбербанку. Попробуйте обновить.</div></div>';
                 return;
             }
+            const tier = classify(b, fair);
+            const tierColor = tier === 'clean' ? 'var(--emerald)' : tier === 'acceptable' ? 'var(--lime)' : 'var(--amber)';
+            const eyebrow = tier === 'clean' ? 'Лучший безопасный оффер' : tier === 'acceptable' ? 'Лучший допустимый оффер' : 'Безопасных нет — лучший доступный';
+            const aRate = anchorRate();
+            const dPct = aRate ? devPct(b, aRate) : 0;
+            const ctaCls = tier === 'clean' ? 'clean' : tier === 'acceptable' ? 'acceptable' : 'warnclr';
+            $('best-content').innerHTML =
+                '<div class="best-eyebrow" style="color:' + tierColor + '">' + eyebrow +
+                    ' <span class="badge ' + TIER_META[tier].cls + '">' + TIER_META[tier].label + '</span></div>' +
+                '<div><span class="best-price num" style="color:' + tierColor + '">' + parseFloat(b.price).toFixed(2) + '</span><span class="best-cur">₽ / USDT</span></div>' +
+                '<div class="best-meta"><strong>' + escapeHtml(b.nickName) + '</strong> · ' + fmtNum(b.finishNum) + ' сделок · ' + (completionRate(b) * 100).toFixed(1) + '% завершено</div>' +
+                '<div class="best-sub">Лимит: ' + fmtNum(b.minAmount) + ' — ' + fmtNum(b.maxAmount) + ' ₽</div>' +
+                '<div class="best-chips">' +
+                    (aRate ? '<span class="pillbadge ' + devCls(dPct) + '">' + (dPct >= 0 ? '+' : '') + dPct.toFixed(2) + '% от ' + (state.anchor === 'cbr' ? 'ЦБ' : 'медианы') + '</span>' : '') +
+                    '<span class="pillbadge ' + trustCls(trustScore(b)) + '">' + trustScore(b) + '/100</span>' +
+                '</div>' + tagsHtml(b) +
+                '<a class="best-cta ' + ctaCls + '" href="' + profileUrl(b) + '" target="_blank" rel="noopener">Продать USDT →</a>';
+        }
 
-            const rub = usdt * price;
-            const fairRub = usdt * gFairRate;
-            const bestRub = gBestSafePrice ? usdt * gBestSafePrice : 0;
-            const diff = rub - fairRub;
-            const pct = ((price - gFairRate) / gFairRate) * 100;
+        function renderAnchor() {
+            const fair = cbrFairRate(), mkt = marketRate(), aRate = anchorRate();
+            if (!fair && !mkt) return;
+            $('anchor-card').classList.remove('hidden');
+            $('anchor-val').textContent = aRate.toFixed(2);
+            $('anchor-lbl').textContent = '₽ / USDT · ' + anchorLabel();
+            let src = '<span>USD/RUB ЦБ: <strong>' + state.cbrRate.toFixed(4) + '</strong></span>' +
+                '<span>USDT/USD: <strong>$' + state.usdtPrice.toFixed(4) + '</strong></span>';
+            if (state.anchor === 'cbr' && mkt) src += '<span>P2P медиана: <strong style="color:var(--amber)">' + mkt.toFixed(2) + ' ₽</strong></span>';
+            if (state.anchor === 'market' && fair) src += '<span>ЦБ fair: <strong>' + fair.toFixed(2) + ' ₽</strong></span>';
+            $('src-row').innerHTML = src;
+            const cleanHigh = (aRate * 0.98).toFixed(2), cleanLow = (aRate * 0.95).toFixed(2);
+            $('clean-zone').innerHTML =
+                'Чистая зона: <strong style="color:var(--emerald)">' + cleanLow + ' — ' + cleanHigh + ' ₽</strong> (95–98% от ' + (state.anchor === 'cbr' ? 'ЦБ' : 'медианы') + ')<br>' +
+                'Выше <strong style="color:var(--rose)">' + cleanHigh + ' ₽</strong> — риск грязных денег';
+            const oh = $('overheat');
+            if (state.anchor === 'cbr' && mkt && fair) {
+                oh.classList.remove('hidden');
+                oh.innerHTML = 'Рынок завышен на <span style="color:var(--amber)">+' + (((mkt - fair) / fair) * 100).toFixed(1) + '%</span> от ЦБ — почти все офферы = скам. <a id="oh-switch">переключить на медиану</a>';
+                $('oh-switch').onclick = () => { setAnchor('market'); };
+            } else oh.classList.add('hidden');
+            // sync anchor segment buttons
+            document.querySelectorAll('#anchor-seg button').forEach(btn => btn.classList.toggle('active', btn.dataset.anchor === state.anchor));
+        }
 
-            $('calc-rub').textContent = fmtNum(rub) + ' ₽';
-            $('calc-rub').style.color = pct > -2 ? '#f85149' : pct > -5 ? '#3fb950' : '#d29922';
-            $('calc-fair-rub').textContent = fmtNum(fairRub) + ' ₽';
-            $('calc-diff').textContent = (diff >= 0 ? '+' : '') + fmtNum(diff) + ' ₽';
-            $('calc-diff').style.color = diff >= 0 ? '#f85149' : '#3fb950';
-            $('calc-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
-            $('calc-pct').style.color = pct > -2 ? '#f85149' : pct > -5 ? '#3fb950' : '#d29922';
-
-            if (bestRub) {
-                const bestDiff = rub - bestRub;
-                $('calc-best-rub').textContent = fmtNum(bestRub) + ' ₽';
-                $('calc-best-diff').textContent = (bestDiff >= 0 ? '+' : '') + fmtNum(bestDiff) + ' ₽';
-                $('calc-best-diff').style.color = bestDiff > 0 ? '#3fb950' : bestDiff < 0 ? '#f85149' : '#8b949e';
-            } else {
-                $('calc-best-rub').textContent = '—';
-                $('calc-best-diff').textContent = '—';
+        function renderKeywords() {
+            $('kw-card').classList.remove('hidden');
+            $('kw-count').textContent = state.customKeywords.length ? state.customKeywords.length : '';
+            const chips = $('kw-chips'), empty = $('kw-empty');
+            chips.innerHTML = '';
+            if (!state.customKeywords.length) { empty.classList.remove('hidden'); return; }
+            empty.classList.add('hidden');
+            // hit counts
+            const hits = {};
+            for (const k of state.customKeywords) {
+                const needle = k.text.toLowerCase(); let n = 0;
+                if (needle) for (const o of state.offers) if ((o.remark || '').toLowerCase().includes(needle)) n++;
+                hits[k.id] = n;
             }
-
-            // Verdict
-            const v = $('calc-verdict');
-            v.style.display = 'block';
-            if (pct > 0) {
-                v.className = 'calc-verdict verdict-bad';
-                v.textContent = '⛔ Курс ВЫШЕ fair rate — признак грязных денег. Не продавайте!';
-            } else if (pct > -2) {
-                v.className = 'calc-verdict verdict-warn';
-                v.textContent = '⚠️ Курс в серой зоне (0–2% ниже fair). Высокий риск грязных денег.';
-            } else if (pct >= -5) {
-                v.className = 'calc-verdict verdict-good';
-                v.textContent = '✅ Курс в чистой зоне (' + pct.toFixed(1) + '% от fair). Безопасно продавать.';
-            } else {
-                v.className = 'calc-verdict verdict-ok';
-                v.textContent = '💡 Курс сильно ниже fair (' + pct.toFixed(1) + '%). Чисто, но невыгодно.';
+            for (const k of state.customKeywords) {
+                const chip = el('span', 'chip ' + (k.severity === 'hard' ? 'hard' : 'soft'));
+                const txt = el('span', 'kw-txt', escapeHtml(k.text));
+                txt.title = k.severity === 'hard' ? 'жёсткий — оффер уходит в «грязные». Клик = переключить на мягкий' : 'мягкий — только метка. Клик = переключить на жёсткий';
+                txt.onclick = () => { k.severity = k.severity === 'hard' ? 'soft' : 'hard'; saveKeywords(); render(); };
+                const cnt = el('span', 'cnt ' + (hits[k.id] > 0 ? 'hit' : 'miss'), String(hits[k.id] || 0));
+                const del = el('span', 'kw-del', '×');
+                del.title = 'Удалить';
+                del.onclick = () => { state.customKeywords = state.customKeywords.filter(x => x.id !== k.id); saveKeywords(); render(); };
+                chip.appendChild(txt); chip.appendChild(cnt); chip.appendChild(del);
+                chips.appendChild(chip);
             }
         }
 
-        const PAGE_SIZE = 10;
-        let safeShown = 0;
-        let dirtyShown = 0;
+        function renderFilters() {
+            $('filters-card').classList.remove('hidden');
+            const active = filterActive();
+            $('filters-active').classList.toggle('hidden', !active);
+            $('filters-reset').classList.toggle('hidden', !active);
+            document.querySelectorAll('#filters-card input[data-filter]').forEach(cb => { cb.checked = state.filters[cb.dataset.filter]; });
+        }
 
-        function renderRow(o, tbody, showBest, fairRate) {
-            const price = parseFloat(o.price);
-            const diff = ((price - fairRate) / fairRate) * 100;
-            const comp = (completionRate(o) * 100).toFixed(1);
-            const ts = trustScore(o);
-            const tl = trustLabel(ts);
-            const url = profileUrl(o);
-            const dirty = isDirty(o, fairRate);
-            const accessible = isAccessible(o);
-            const minOrd = minOrdersRequired(o);
-
-            const tr = document.createElement('tr');
-            if (dirty) tr.className = 'row-dirty';
-            if (!accessible) tr.style.opacity = '0.4';
-
-            let lockInfo = '';
-            if (minOrd > 0) {
-                const color = accessible ? '#8b949e' : '#f85149';
-                lockInfo = '<div class="offer-stats" style="color:' + color + '">' +
-                    (accessible ? '' : '&#128274; ') + 'мин. ' + minOrd + ' сделок/мес</div>';
-            }
-
-            tr.innerHTML = `
-                <td>
-                    <div class="badge-row">
-                        ${showBest ? '<span class="badge badge-top">BEST</span>' : ''}
-                        ${dirty ? '<span class="badge badge-dirty">&#9888;</span>' : ''}
-                        ${!accessible ? '<span class="badge" style="background:#d29922;color:#0d1117">&#128274;</span>' : ''}
-                        <a class="offer-nick" href="${url}" target="_blank">${o.nickName}</a>
-                    </div>
-                    <a class="sell-btn" href="${url}" target="_blank">Продать USDT</a>
-                </td>
-                <td>
-                    <div class="offer-price">${price.toFixed(2)} &#8381;</div>
-                    <div class="offer-stats">${(diff >= 0 ? '+' : '') + diff.toFixed(2)}%</div>
-                    ${dirty ? '<div class="offer-stats" style="color:#f85149">грязные?</div>' : ''}
-                </td>
-                <td>
-                    <div class="offer-limit">${fmtNum(o.minAmount)}–${fmtNum(o.maxAmount)} &#8381;</div>
-                    <span class="trust ${tl.cls}">${ts}/100</span>
-                    ${lockInfo}
-                </td>
-                <td>
-                    <span class="offer-rate ${rateClass(parseFloat(comp))}">${comp}%</span>
-                    <div class="offer-stats">${fmtNum(o.finishNum)} шт</div>
-                </td>
-            `;
-            tbody.appendChild(tr);
+        function offerRow(o, opts) {
+            opts = opts || {};
+            const fair = cbrFairRate(), aRate = anchorRate();
+            const tier = classify(o, fair);
+            const dPct = aRate ? devPct(o, aRate) : 0;
+            const comp = completionRate(o) * 100;
+            const tr = el('tr', opts.dim ? 'dim' : '');
+            // seller cell
+            let flags = '<div class="row-flag">';
+            if (opts.best) flags += '<span class="badge badge-best">Best</span>';
+            if (opts.showTier !== false) flags += '<span class="badge ' + TIER_META[tier].cls + '">' + TIER_META[tier].label + '</span>';
+            flags += '<a class="nick" href="' + profileUrl(o) + '" target="_blank" rel="noopener">' + escapeHtml(o.nickName) + '</a></div>';
+            let sellCell = '<td>' + flags;
+            if (opts.sell !== false) sellCell += '<a class="sell-btn" href="' + profileUrl(o) + '" target="_blank" rel="noopener">Продать</a>';
+            sellCell += tagsHtml(o) + '</td>';
+            // price cell
+            const priceCell = '<td><div class="price">' + parseFloat(o.price).toFixed(2) + ' ₽</div>' +
+                '<div class="price-dev" style="color:var(--dim)">' + (dPct >= 0 ? '+' : '') + dPct.toFixed(2) + '%</div></td>';
+            // limit cell
+            const limitCell = '<td><div class="lim">' + fmtNum(o.minAmount) + '–' + fmtNum(o.maxAmount) + ' ₽</div>' +
+                '<span class="badge ' + trustCls(trustScore(o)) + '" style="margin-top:4px">' + trustScore(o) + '/100</span></td>';
+            // deals cell
+            const dealsCell = '<td style="text-align:right"><span class="pillbadge ' + rateCls(comp) + '">' + comp.toFixed(1) + '%</span>' +
+                '<div class="deals-sub">' + fmtNum(o.finishNum) + ' шт</div></td>';
+            tr.innerHTML = sellCell + priceCell + limitCell + dealsCell;
+            return tr;
         }
 
         function renderSafe() {
-            const safe = p2p.getSafe();
-            const end = Math.min(safeShown + PAGE_SIZE, safe.length);
-            const safeBody = $('safe-body');
-            for (let i = safeShown; i < end; i++) {
-                renderRow(safe[i], safeBody, i === 0, p2p.fairRate);
+            $('safe-card').classList.remove('hidden');
+            const safe = safeVisible(), all = safeOffers();
+            const cleanN = cleanOffers().length, accN = acceptableOffers().length;
+            $('clean-n').textContent = cleanN;
+            $('acc-n').textContent = accN;
+            let cnt = '(' + safe.length;
+            if (filterActive() && safe.length !== all.length) cnt += ' / ' + all.length;
+            cnt += ')';
+            $('safe-count').textContent = cnt;
+
+            const table = $('safe-table'), body = $('safe-body'), empty = $('safe-empty'), moreBtn = $('safe-more');
+            body.innerHTML = '';
+            if (all.length === 0 && state.poll.active) {
+                table.classList.add('hidden'); moreBtn.classList.add('hidden');
+                empty.className = 'empty muted'; empty.innerHTML = '<span class="spinner sm"></span> Ищем безопасные офферы…'; empty.classList.remove('hidden');
+                return;
             }
-            safeShown = end;
+            if (all.length === 0) {
+                table.classList.add('hidden'); moreBtn.classList.add('hidden');
+                empty.className = 'empty amber'; empty.textContent = 'Безопасных офферов сейчас нет. Все текущие предложения выше порога риска.'; empty.classList.remove('hidden');
+                return;
+            }
+            if (safe.length === 0) {
+                table.classList.add('hidden'); moreBtn.classList.add('hidden');
+                empty.className = 'empty amber'; empty.textContent = 'Ни один из ' + all.length + ' безопасных офферов не прошёл скрипт-проверки. Сними часть чекбоксов.'; empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden'); table.classList.remove('hidden');
+            const show = safe.slice(0, state.safeShown);
+            show.forEach((o, i) => body.appendChild(offerRow(o, { best: i === 0 })));
+            moreBtn.classList.toggle('hidden', state.safeShown >= safe.length);
+            moreBtn.textContent = 'Загрузить ещё' + (done ? '' : ' (ищем ещё)');
+        }
 
-            $('safe-title').textContent = 'Безопасные офферы (' + safe.length + (p2p.done ? '' : '+') + ')';
-
-            const btn = $('safe-more');
-            if (safeShown >= safe.length && p2p.done) {
-                btn.style.display = 'none';
-            } else {
-                btn.style.display = 'block';
-                const remaining = safe.length - safeShown;
-                btn.textContent = remaining > 0
-                    ? 'Загрузить ещё (' + remaining + ' готово' + (p2p.done ? '' : ', ищем ещё') + ')'
-                    : 'Загрузить ещё';
+        function renderRisky() {
+            const risky = riskyOffers(), vis = riskyVisible();
+            const d = $('risky-d');
+            if (!risky.length) { d.classList.add('hidden'); return; }
+            d.classList.remove('hidden');
+            let cnt = String(vis.length);
+            if (filterActive() && vis.length !== risky.length) cnt += ' / ' + risky.length;
+            $('risky-count').textContent = cnt;
+            const table = $('risky-table'), body = $('risky-body'), empty = $('risky-empty');
+            body.innerHTML = '';
+            if (risky.length > 0 && vis.length === 0) {
+                table.classList.add('hidden');
+                empty.textContent = 'Из ' + risky.length + ' рискованных офферов ни один не прошёл активные чекбоксы. Смягчи фильтры.';
+                empty.classList.remove('hidden');
+                return;
+            }
+            empty.classList.add('hidden'); table.classList.remove('hidden');
+            const aRate = anchorRate();
+            for (const o of vis) {
+                const bait = baitFor(o);
+                const hist = histFor(o);
+                const comp = completionRate(o) * 100;
+                const dPct = aRate ? devPct(o, aRate) : 0;
+                const tr = el('tr');
+                // seller cell
+                let flags = '<div class="row-flag"><span class="badge t-risky">рискованно</span>';
+                if (bait.bait_detected) flags += '<span class="badge badge-bait" title="в профиле ' + bait.ad_count + ' объяв: ' + bait.min_price.toFixed(2) + '–' + bait.max_price.toFixed(2) + ' ₽">ПРИМАНКА</span>';
+                flags += '<a class="nick" style="max-width:120px" href="' + profileUrl(o) + '" target="_blank" rel="noopener">' + escapeHtml(o.nickName) + '</a></div>';
+                let sellCell = '<td>' + flags +
+                    '<a class="sell-btn orange" href="' + profileUrl(o) + '" target="_blank" rel="noopener">Продать</a>' +
+                    '<div style="font-size:10px;color:var(--dim);margin-top:4px">лимит ' + fmtNum(o.minAmount) + '–' + fmtNum(o.maxAmount) + ' ₽</div>';
+                if (bait.ad_count > 1) {
+                    sellCell += '<div style="font-size:10px;margin-top:2px;color:' + (bait.bait_detected ? 'var(--rose)' : 'var(--dim)') + '">в профиле: ' + bait.ad_count + ' объяв · ' + bait.min_price.toFixed(2) + '–' + bait.max_price.toFixed(2) + ' ₽' + (bait.bait_detected ? ' (spread +' + bait.bait_spread_pct.toFixed(1) + '%)' : '') + '</div>';
+                }
+                sellCell += '</td>';
+                // price cell
+                const priceCell = '<td><div class="price">' + parseFloat(o.price).toFixed(2) + ' ₽</div><div style="font-size:11px;color:var(--orange)">+' + dPct.toFixed(2) + '%</div></td>';
+                // checks cell
+                let checksHtml = '<ul class="checks">';
+                for (const c of scriptRiskChecks(o)) checksHtml += '<li class="' + (c.ok ? 'ok' : 'no') + '"><span class="mk">' + (c.ok ? '✓' : '✗') + '</span><span>' + escapeHtml(c.label) + '</span></li>';
+                if (!hist.known) checksHtml += '<li class="muted">история пока не собрана (нужны повторные визиты)</li>';
+                checksHtml += '</ul>';
+                const checksCell = '<td>' + checksHtml + '</td>';
+                // deals cell
+                const dealsCell = '<td style="text-align:right;vertical-align:top"><span class="pillbadge ' + rateCls(comp) + '">' + comp.toFixed(1) + '%</span>' +
+                    '<div class="deals-sub">' + fmtNum(o.finishNum) + ' шт</div>' +
+                    '<span class="badge ' + trustCls(trustScore(o)) + '" style="margin-top:4px">' + trustScore(o) + '/100</span></td>';
+                tr.style.verticalAlign = 'top';
+                tr.innerHTML = sellCell + priceCell + checksCell + dealsCell;
+                body.appendChild(tr);
             }
         }
 
         function renderDirty() {
-            const dirty = p2p.getDirty();
-            if (dirty.length === 0) return;
-            const end = Math.min(dirtyShown + PAGE_SIZE, dirty.length);
-            const dirtyBody = $('dirty-body');
-            for (let i = dirtyShown; i < end; i++) {
-                renderRow(dirty[i], dirtyBody, false, p2p.fairRate);
+            const susp = suspiciousOffers(), dirty = dirtyOffers();
+            const total = susp.length + dirty.length;
+            const d = $('dirty-d');
+            if (!total) { d.classList.add('hidden'); return; }
+            d.classList.remove('hidden');
+            $('sd-count').textContent = total;
+            $('sd-breakdown').textContent = '(подозрит. ' + susp.length + ' · грязно ' + dirty.length + ')';
+            const body = $('dirty-body'), moreBtn = $('dirty-more');
+            body.innerHTML = '';
+            const list = susp.concat(dirty).slice(0, state.dirtyShown);
+            for (const o of list) {
+                const tier = classify(o, cbrFairRate());
+                body.appendChild(offerRow(o, { dim: tier === 'dirty' || tier === 'suspicious', sell: false, best: false }));
             }
-            dirtyShown = end;
-
-            $('dirty-count').textContent = dirty.length + (p2p.done ? '' : '+');
-            $('dirty-card').style.display = 'block';
-
-            const btn = $('dirty-more');
-            if (dirtyShown >= dirty.length && p2p.done) {
-                btn.style.display = 'none';
-            } else {
-                btn.style.display = 'block';
-                const remaining = dirty.length - dirtyShown;
-                btn.textContent = remaining > 0
-                    ? 'Загрузить ещё (' + remaining + ' готово)'
-                    : 'Загрузить ещё';
-            }
+            moreBtn.classList.toggle('hidden', state.dirtyShown >= total);
         }
 
-        async function loadMoreSafe() {
-            const btn = $('safe-more');
-            const safe = p2p.getSafe();
+        // ---------- calculator ----------
+        function renderCalc() {
+            $('calc-d').classList.remove('hidden');
+            const aRate = anchorRate();
+            const usdt = parseFloat($('calc-usdt').value) || 0;
+            const price = parseFloat($('calc-price').value) || 0;
+            const mode = $('calc-compare').value;
+            $('calc-custom-wrap').classList.toggle('hidden', mode !== 'custom');
+            const bs = bestSafe();
+            const bestPrice = bs ? parseFloat(bs.price) : 0;
 
-            // If we already have unrendered safe offers, just render them
-            if (safeShown < safe.length) {
-                renderSafe();
+            if (!usdt || !price || !aRate) {
+                $('calc-rub').textContent = '—';
+                $('calc-verdict').classList.add('hidden');
                 return;
             }
+            const rub = usdt * price;
+            const fairRub = usdt * aRate;
+            const bestRub = bestPrice ? usdt * bestPrice : 0;
+            const diff = rub - fairRub;
+            const pct = ((price - aRate) / aRate) * 100;
 
-            // Need to fetch more from API
-            if (p2p.done) { btn.style.display = 'none'; return; }
+            const pctColor = pct > 0 ? 'var(--rose)' : pct > -2 ? 'var(--amber)' : pct >= -5 ? 'var(--emerald)' : 'var(--lime)';
+            $('calc-rub').textContent = fmtNum(rub) + ' ₽';
+            $('calc-rub').style.color = pctColor;
+            $('calc-fair-rub').textContent = fmtNum(fairRub) + ' ₽';
+            $('calc-diff').textContent = (diff >= 0 ? '+' : '') + fmtNum(diff) + ' ₽';
+            $('calc-diff').style.color = diff >= 0 ? 'var(--rose)' : 'var(--emerald)';
+            $('calc-pct').textContent = (pct >= 0 ? '+' : '') + pct.toFixed(2) + '%';
+            $('calc-pct').style.color = pctColor;
 
-            btn.textContent = 'Загрузка...';
-            btn.disabled = true;
-            try {
-                await p2p.loadUntilSafe(PAGE_SIZE);
+            if (bestRub) {
+                const bestDiff = rub - bestRub;
+                $('calc-best-row').classList.remove('hidden'); $('calc-bestdiff-row').classList.remove('hidden');
+                $('calc-best-rub').textContent = fmtNum(bestRub) + ' ₽';
+                $('calc-best-diff').textContent = (bestDiff >= 0 ? '+' : '') + fmtNum(bestDiff) + ' ₽';
+                $('calc-best-diff').style.color = bestDiff > 0 ? 'var(--emerald)' : bestDiff < 0 ? 'var(--rose)' : 'var(--muted)';
+            } else {
+                $('calc-best-row').classList.add('hidden'); $('calc-bestdiff-row').classList.add('hidden');
+            }
+
+            const v = $('calc-verdict');
+            v.classList.remove('hidden');
+            const refTxt = state.anchor === 'cbr' ? 'ЦБ fair' : 'P2P медианы';
+            if (pct > 0) { v.className = 'verdict v-bad'; v.textContent = '⛔ Курс ВЫШЕ ' + refTxt + ' (+' + pct.toFixed(1) + '%) — признак грязных денег. Не продавайте!'; }
+            else if (pct > -2) { v.className = 'verdict v-warn'; v.textContent = '⚠️ Серая зона (' + pct.toFixed(1) + '% от ' + refTxt + '). Высокий риск грязных денег.'; }
+            else if (pct >= -5) { v.className = 'verdict v-good'; v.textContent = '✅ Чистая зона (' + pct.toFixed(1) + '% от ' + refTxt + '). Безопасно продавать.'; }
+            else { v.className = 'verdict v-ok'; v.textContent = '💡 Сильно ниже ' + refTxt + ' (' + pct.toFixed(1) + '%). Чисто, но невыгодно.'; }
+        }
+
+        function renderUpdated() {
+            const u = $('updated');
+            if (state.poll.active) {
+                u.innerHTML = '<span style="color:var(--cyan)"><span class="spinner sm"></span> Опрашиваем Bybit · стр. ' + state.poll.page + '/' + state.poll.totalPages + ' · ' + state.poll.itemsFound + ' офферов</span>';
+            } else if (state.updatedAt) {
+                u.innerHTML = 'Обновлено: ' + new Date(state.updatedAt).toLocaleTimeString('ru-RU') + ' <button class="refresh-btn" id="refresh-btn">Обновить</button>';
+                $('refresh-btn').onclick = manualRefresh;
+            } else u.innerHTML = '';
+        }
+
+        // ---------- master render ----------
+        function render() {
+            renderProgress();
+            $('progress').classList.toggle('hidden', !(state.loading && !state.offers.length));
+            $('best-content').classList.toggle('hidden', !(!state.loading || state.offers.length));
+            if (state.error && !state.offers.length) {
+                $('best-error').classList.remove('hidden'); $('best-error').textContent = 'Ошибка: ' + state.error;
+                $('progress').classList.add('hidden');
+            } else $('best-error').classList.add('hidden');
+
+            if (state.offers.length || !state.loading) {
+                renderBest();
+                renderAnchor();
+                renderKeywords();
+                renderFilters();
                 renderSafe();
-                // Also update dirty count
-                renderDirtyBtn();
-            } catch (e) {
-                btn.textContent = 'Ошибка: ' + e.message + '. Попробовать снова';
-            }
-            btn.disabled = false;
-        }
-
-        function renderDirtyBtn() {
-            const dirty = p2p.getDirty();
-            if (dirty.length > 0) {
-                $('dirty-count').textContent = dirty.length + (p2p.done ? '' : '+');
-                $('dirty-card').style.display = 'block';
-                const btn = $('dirty-more');
-                const remaining = dirty.length - dirtyShown;
-                if (remaining > 0) {
-                    btn.style.display = 'block';
-                    btn.textContent = 'Загрузить ещё (' + remaining + ' готово)';
-                }
-            }
-        }
-
-        async function loadMoreDirty() {
-            const dirty = p2p.getDirty();
-            if (dirtyShown < dirty.length) {
+                renderRisky();
                 renderDirty();
+                renderCalc();
             }
+            renderUpdated();
         }
 
-        async function load() {
-            $('loading').style.display = 'block';
-            $('best-content').style.display = 'none';
-            $('error').style.display = 'none';
-            $('fair-card').style.display = 'none';
-            $('safe-card').style.display = 'none';
-            $('dirty-card').style.display = 'none';
-            $('safe-more').style.display = 'none';
-            $('dirty-more').style.display = 'none';
-            $('safe-body').innerHTML = '';
-            $('dirty-body').innerHTML = '';
-            safeShown = 0;
-            dirtyShown = 0;
+        // ---------- actions ----------
+        function setAnchor(a) { state.anchor = a; render(); }
 
-            try {
-                const [usdRub, usdtUsd] = await Promise.all([fetchCBR(), fetchUSDT()]);
-                const fairRate = usdRub * usdtUsd;
+        async function loadMoreSafe() {
+            const safe = safeVisible();
+            if (state.safeShown < safe.length) { state.safeShown += PAGE_SIZE; render(); return; }
+            if (done) { render(); return; }
+            const btn = $('safe-more'); btn.textContent = 'Загрузка…'; btn.disabled = true;
+            await loadUntilSafe(PAGE_SIZE);
+            state.safeShown += PAGE_SIZE;
+            recordSnapshot(state.offers);
+            btn.disabled = false;
+            render();
+        }
+        function loadMoreDirty() { state.dirtyShown += PAGE_SIZE; render(); }
 
-                // Setup incremental loader
-                p2p.reset();
-                p2p.fairRate = fairRate;
-
-                // Fair rate card
-                $('fair-rate').textContent = fairRate.toFixed(2);
-                $('cbr-rate').textContent = usdRub.toFixed(4);
-                $('usdt-price').textContent = '$' + usdtUsd.toFixed(4);
-
-                const cleanHigh = (fairRate * 0.98).toFixed(2);
-                const cleanLow = (fairRate * 0.95).toFixed(2);
-                $('safe-range').innerHTML =
-                    'Чистая зона: <strong>' + cleanLow + ' &mdash; ' + cleanHigh + ' ₽</strong> (95&ndash;98% от fair)<br>' +
-                    'Выше ' + cleanHigh + ' ₽ &mdash; <span class="danger">риск грязных денег (казино, процессинг)</span><br>' +
-                    'Ниже ' + cleanLow + ' ₽ &mdash; слишком низко, невыгодно';
-                $('fair-card').style.display = 'block';
-
-                // Load just enough to get first 10 safe offers
-                $('loading').innerHTML = '<span class="spinner"></span>Загрузка офферов Bybit...';
-                await p2p.loadUntilSafe(PAGE_SIZE);
-
-                const safe = p2p.getSafe();
-                const dirty = p2p.getDirty();
-                const all = p2p.getAll();
-
-                if (all.length === 0) {
-                    $('loading').style.display = 'none';
-                    $('error').style.display = 'block';
-                    $('error').textContent = 'Нет офферов на Сбербанк.';
-                    return;
-                }
-
-                // Best offer card
-                const safeBest = safe[0];
-                const best = safeBest || all[0];
-                const bestIsSafe = !!safeBest;
-
-                const bestPrice = parseFloat(best.price);
-                const bestDiff = ((bestPrice - fairRate) / fairRate) * 100;
-                const bestComp = (completionRate(best) * 100).toFixed(1);
-
-                if (!bestIsSafe) {
-                    $('best-title').textContent = 'Лучший оффер (безопасных нет!)';
-                    $('best-price').style.color = '#d29922';
-                } else {
-                    $('best-title').textContent = 'Лучший безопасный оффер';
-                    $('best-price').style.color = '#3fb950';
-                }
-
-                $('best-price').textContent = bestPrice.toFixed(2);
-                $('best-nick').textContent = best.nickName;
-                $('best-orders').textContent = fmtNum(best.finishNum);
-                $('best-completion').textContent = bestComp;
-                $('best-limit').textContent = fmtNum(best.minAmount) + ' — ' + fmtNum(best.maxAmount);
-                $('best-dev').textContent = (bestDiff >= 0 ? '+' : '') + bestDiff.toFixed(2) + '% от fair';
-                $('best-dev').className = 'best-deviation ' + devClass(bestDiff);
-
-                const bestTs = trustScore(best);
-                const bestTl = trustLabel(bestTs);
-                $('best-trust').innerHTML = '<span class="trust ' + bestTl.cls + '">' + bestTl.text + '</span>';
-                $('best-link').href = profileUrl(best);
-
-                $('loading').style.display = 'none';
-                $('best-content').style.display = 'block';
-
-                // Render first batch of safe offers
-                if (safe.length > 0) {
-                    renderSafe();
-                    $('no-safe').style.display = 'none';
-                } else {
-                    $('no-safe').style.display = 'block';
-                    if (!p2p.done) {
-                        $('safe-more').style.display = 'block';
-                        $('safe-more').textContent = 'Загрузить ещё (ищем безопасные)';
-                    }
-                }
-                $('safe-card').style.display = 'block';
-                $('safe-more').onclick = loadMoreSafe;
-
-                // Render first batch of dirty (already collected while searching for safe)
-                if (dirty.length > 0) {
-                    renderDirty();
-                }
-                $('dirty-more').onclick = loadMoreDirty;
-
-                // Calculator
-                gFairRate = fairRate;
-                if (safeBest) gBestSafePrice = parseFloat(safeBest.price);
-                if (gBestSafePrice && !$('calc-price').dataset.userEdited) {
-                    $('calc-price').value = gBestSafePrice.toFixed(2);
-                }
-                $('calc-card').style.display = 'block';
-                calcUpdate();
-
-                $('updated').innerHTML = 'Обновлено: ' + new Date().toLocaleTimeString('ru-RU') +
-                    ' <button class="refresh-btn" onclick="load()">Обновить</button>';
-
-            } catch (e) {
-                $('loading').style.display = 'none';
-                $('error').style.display = 'block';
-                $('error').textContent = 'Ошибка: ' + e.message;
-            }
+        async function manualRefresh() {
+            byUser.clear(); pricesByUser.clear();
+            nextPage = 1; done = false; loadingPages = false;
+            state.offers = []; state.error = null; state.loading = true;
+            state.safeShown = PAGE_SIZE; state.dirtyShown = PAGE_SIZE;
+            state.poll = { active: false, page: 0, totalPages: BYBIT_MAX_PAGES, itemsFound: 0, startedAt: 0 };
+            render();
+            await Promise.all([fetchFairRate(), loadUntilSafe(PAGE_SIZE)]);
+            recordSnapshot(state.offers);
+            state.loading = false;
+            render();
         }
 
-        load();
+        // ---------- event wiring ----------
+        document.querySelectorAll('#anchor-seg button').forEach(btn => { btn.onclick = () => setAnchor(btn.dataset.anchor); });
+        document.querySelectorAll('#filters-card input[data-filter]').forEach(cb => {
+            cb.onchange = async () => {
+                state.filters[cb.dataset.filter] = cb.checked;
+                if (cb.dataset.filter === 'known14' && cb.checked) recordSnapshot(state.offers);
+                render();
+            };
+        });
+        $('filters-reset').onclick = () => { state.filters = { bankAccount: false, completion: false, totalDeals: false, known14: false, trust80: false }; render(); };
+        $('safe-more').onclick = loadMoreSafe;
+        $('dirty-more').onclick = loadMoreDirty;
+
+        // keyword UI
+        let newSev = 'hard';
+        const kwInput = $('kw-input'), kwAddBtn = $('kw-add-btn');
+        kwInput.oninput = () => { kwAddBtn.disabled = !kwInput.value.trim(); };
+        kwInput.onkeydown = e => { if (e.key === 'Enter') { e.preventDefault(); addKeyword(); } };
+        document.querySelectorAll('#kw-sev button').forEach(btn => {
+            btn.onclick = () => {
+                newSev = btn.dataset.sev;
+                document.querySelectorAll('#kw-sev button').forEach(b => {
+                    b.classList.remove('on-soft', 'on-hard');
+                    if (b.dataset.sev === newSev) b.classList.add(newSev === 'hard' ? 'on-hard' : 'on-soft');
+                });
+            };
+        });
+        function addKeyword() {
+            const t = kwInput.value.trim();
+            if (!t) return;
+            if (state.customKeywords.some(k => k.text.toLowerCase() === t.toLowerCase())) { kwInput.value = ''; kwAddBtn.disabled = true; return; }
+            state.customKeywords.push({ id: makeId(), text: t, severity: newSev });
+            kwInput.value = ''; kwAddBtn.disabled = true;
+            saveKeywords(); render();
+        }
+        kwAddBtn.onclick = addKeyword;
+
+        // calculator inputs
+        ['calc-usdt', 'calc-price', 'calc-custom'].forEach(id => $(id).oninput = renderCalc);
+        $('calc-compare').onchange = renderCalc;
+
+        // ---------- boot ----------
+        async function boot() {
+            state.loading = true;
+            render();
+            await fetchFairRate();
+            await loadUntilSafe(PAGE_SIZE);
+            recordSnapshot(state.offers);
+            // seed calc price with best safe
+            const bs = bestSafe();
+            if (bs && !$('calc-price').value) $('calc-price').value = parseFloat(bs.price).toFixed(2);
+            state.loading = false;
+            render();
+        }
+        boot();
+    })();
     </script>
 </body>
 </html>
