@@ -611,6 +611,7 @@
             filters: { bankAccount: false, completion: false, totalDeals: false, known14: false, trust80: false },
             customKeywords: [],
             netNote: null,
+            autoRetry: false,
         };
 
         // loader internals
@@ -1062,7 +1063,7 @@
                     });
                     state.poll.itemsFound = byUser.size;
                     refreshOffers();
-                    renderProgress();
+                    render(); // полный рендер: юзер видит live как best-карточка идёт от грязного верха к чистым
                     if (results.every(r => r.status === 'rejected')) {
                         // вся волна упала (сеть/лимит) — вернуть страницы в очередь и подождать, не бросать скан
                         nextPage = pages[0];
@@ -1072,7 +1073,7 @@
                             break;
                         }
                         state.netNote = 'сеть икает — пауза и ретрай ' + waveFails + '/3…';
-                        renderProgress();
+                        render();
                         await sleep(4000 * waveFails);
                         continue;
                     }
@@ -1093,6 +1094,21 @@
                 // не персистим обрывок верха стакана (одни грязные) — только полноценный скан
                 if (done || state.offers.length >= 50) persistLastOffers();
             }
+        }
+        // Автодожим: обрыв скана НЕ должен оставлять юзеру грязный верх стакана с кнопкой —
+        // ретраим сами, пока не дойдём до безопасных (или не исчерпаем попытки).
+        async function scanWithAutoRetry(need) {
+            await loadUntilSafe(need);
+            for (let retry = 1; retry <= 4 && !done && state.error && safeOffers().length === 0; retry++) {
+                state.autoRetry = true;
+                state.netNote = 'сеть икнула — автоповтор ' + retry + '/4 через ' + (3 * retry) + ' сек';
+                render();
+                await sleep(3000 * retry);
+                state.error = null;
+                await loadUntilSafe(need);
+            }
+            state.autoRetry = false;
+            state.netNote = null;
         }
 
         // ---------- rendering ----------
@@ -1137,18 +1153,23 @@
             }
             const tier = classify(b);
             const unsafe = tier === 'dirty' || tier === 'suspicious';
+            const scanning = state.poll.active || state.autoRetry;
             const tierColor = tier === 'clean' ? 'var(--emerald)' : 'var(--amber)';
             const eyebrow = tier === 'clean' ? 'Лучший чистый оффер' : tier === 'acceptable' ? 'Лучший допустимый (впритык к ЦБ, чистых нет)' :
-                (done ? 'Безопасных нет — только верх стакана' : 'Скан не дошёл до чистой зоны');
+                (scanning ? 'Пока только верх стакана — сканируем глубже' : done ? 'Безопасных нет — только верх стакана' : 'Скан не дошёл до чистой зоны');
             const aRate = anchorRate();
             const dPct = aRate ? devPct(b, aRate) : 0;
             const ctaCls = tier === 'clean' ? 'clean' : 'acceptable';
             // НИКОГДА не даём кнопку «Продать» на dirty/suspicious — обрыв скана показывал
             // грязный 81₽ с оранжевой CTA (инцидент 2026-07-06)
             const cta = unsafe
-                ? '<div class="empty rose" style="margin-top:14px">Продавать по этому курсу опасно — он выше эталона. ' +
-                  (done ? 'Сейчас чистых офферов на рынке нет.' : 'Скан оборвался на дорогих офферах.') +
-                  ' <button class="refresh-btn" id="best-retry" style="margin-left:6px">' + (done ? 'Обновить' : 'Дозагрузить') + '</button></div>'
+                ? (scanning
+                    ? '<div class="empty amber" style="margin-top:14px"><span class="spinner sm"></span> Это НЕ финал — верх стакана грязный всегда. Идём глубже: страница ' +
+                      state.poll.page + ', найдено ' + state.poll.itemsFound + ' офферов' +
+                      (state.netNote ? ' · ' + escapeHtml(state.netNote) : '') + '…</div>'
+                    : '<div class="empty rose" style="margin-top:14px">Продавать по этому курсу опасно — он выше эталона. ' +
+                      (done ? 'Сейчас чистых офферов на рынке нет.' : 'Скан оборвался на дорогих офферах.') +
+                      ' <button class="refresh-btn" id="best-retry" style="margin-left:6px">' + (done ? 'Обновить' : 'Дозагрузить') + '</button></div>')
                 : '<a class="best-cta ' + ctaCls + '" href="' + profileUrl(b) + '" target="_blank" rel="noopener">Продать USDT →</a>';
             $('best-content').innerHTML =
                 '<div class="best-eyebrow" style="color:' + tierColor + '">' + eyebrow +
@@ -1161,7 +1182,7 @@
                     '<span class="pillbadge ' + trustCls(trustScore(b)) + '">' + trustScore(b) + '/100</span>' +
                 '</div>' + tagsHtml(b) + cta;
             const retryBtn = $('best-retry');
-            if (retryBtn) retryBtn.onclick = () => { retryBtn.disabled = true; (done ? manualRefresh() : loadMoreSafe()); };
+            if (retryBtn) retryBtn.onclick = () => { retryBtn.disabled = true; state.error = null; (done ? manualRefresh() : loadMoreSafe()); };
         }
 
         function renderAnchor() {
@@ -1416,8 +1437,9 @@
 
         function renderUpdated() {
             const u = $('updated');
-            if (state.poll.active) {
-                u.innerHTML = '<span style="color:var(--cyan)"><span class="spinner sm"></span> Опрашиваем Bybit · стр. ' + state.poll.page + '/' + state.poll.totalPages + ' · ' + state.poll.itemsFound + ' офферов</span>';
+            if (state.poll.active || state.autoRetry) {
+                u.innerHTML = '<span style="color:var(--cyan)"><span class="spinner sm"></span> Опрашиваем Bybit · стр. ' + state.poll.page + '/' + state.poll.totalPages + ' · ' + state.poll.itemsFound + ' офферов' +
+                    (state.netNote ? ' · <span style="color:var(--amber)">' + escapeHtml(state.netNote) + '</span>' : '') + '</span>';
             } else if (state.updatedAt) {
                 u.innerHTML = 'Обновлено: ' + new Date(state.updatedAt).toLocaleTimeString('ru-RU') + ' <button class="refresh-btn" id="refresh-btn">Обновить</button>';
                 $('refresh-btn').onclick = manualRefresh;
@@ -1456,7 +1478,7 @@
             if (state.safeShown < safe.length) { state.safeShown += PAGE_SIZE; render(); return; }
             if (done) { render(); return; }
             const btn = $('safe-more'); btn.textContent = 'Загрузка…'; btn.disabled = true;
-            await loadUntilSafe(PAGE_SIZE);
+            await scanWithAutoRetry(PAGE_SIZE);
             state.safeShown += PAGE_SIZE;
             recordSnapshot(state.offers);
             btn.disabled = false;
@@ -1471,7 +1493,7 @@
             state.safeShown = PAGE_SIZE; state.dirtyShown = PAGE_SIZE;
             state.poll = { active: false, page: 0, totalPages: BYBIT_MAX_PAGES, itemsFound: 0, startedAt: 0 };
             render();
-            await Promise.all([fetchFairRate(), loadUntilSafe(PAGE_SIZE)]);
+            await Promise.all([fetchFairRate(), scanWithAutoRetry(PAGE_SIZE)]);
             recordSnapshot(state.offers);
             state.loading = false;
             render();
@@ -1532,7 +1554,7 @@
             }
             render();
             await Promise.all([fetchFairRate(), fetchRemoteHistory()]);
-            await loadUntilSafe(PAGE_SIZE);
+            await scanWithAutoRetry(PAGE_SIZE);
             recordSnapshot(state.offers);
             // seed calc price with best safe
             const bs = bestSafe();
