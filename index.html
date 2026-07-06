@@ -565,12 +565,23 @@
     (function () {
         'use strict';
         const $ = id => document.getElementById(id);
-        // Bybit item/online принимает ТОЛЬКО POST. Из публичных CORS-прокси POST реально умеет
-        // только corsproxy.io (allorigins = 500 на POST, thingproxy/codetabs — мертвы; проверено curl 2026-07-06).
-        // Поэтому: POST = один прокси + retry с backoff (НЕ пул мёртвых), GET (ЦБ/CoinGecko) = с fallback.
-        const POST_PROXIES = ['https://corsproxy.io/?url='];
+        // Bybit item/online принимает ТОЛЬКО POST и не отдаёт CORS. Публичные прокси мертвы/лимитят
+        // (corsproxy.io банит по IP, allorigins = 500 на POST — проверено curl 2026-07-06).
+        // Основной путь = СВОЙ endpoint (nginx на UK1, см. nginx/ в репо), corsproxy — fallback.
+        // ЦБ и CoinGecko отдают Access-Control-Allow-Origin: * — им прокси НЕ нужен вообще.
+        const BYBIT_ENDPOINTS = [
+            { url: 'https://bazamarkaryana.ru/bybit/otc', wrap: false },
+            { url: 'https://corsproxy.io/?url=', wrap: true },
+        ];
         const GET_PROXIES = ['https://corsproxy.io/?url=', 'https://api.allorigins.win/raw?url='];
         const sleep = ms => new Promise(r => setTimeout(r, ms));
+        // fetch с жёстким таймаутом — висящий запрос через дохлый прокси давал вечную «инициализацию»
+        async function fetchT(url, opts, ms) {
+            const ctl = new AbortController();
+            const t = setTimeout(() => ctl.abort(), ms || 12000);
+            try { return await fetch(url, Object.assign({}, opts || {}, { signal: ctl.signal })); }
+            finally { clearTimeout(t); }
+        }
         const BYBIT_URL = 'https://api2.bybit.com/fiat/otc/item/online';
         const PAGE_SIZE = 10;
         const BYBIT_MAX_PAGES = 200;
@@ -599,6 +610,7 @@
             poll: { active: false, page: 0, totalPages: BYBIT_MAX_PAGES, itemsFound: 0, startedAt: 0 },
             filters: { bankAccount: false, completion: false, totalDeals: false, known14: false, trust80: false },
             customKeywords: [],
+            netNote: null,
         };
 
         // loader internals
@@ -931,24 +943,30 @@
         }
         function best() { return bestSafe() || bestOverall(); }
 
-        // ---------- fetch (retry + backoff; POST только через corsproxy.io) ----------
-        async function viaProxy(url, opts) {
-            const isPost = opts && opts.method === 'POST';
-            const pool = isPost ? POST_PROXIES : GET_PROXIES;
+        // ---------- fetch ----------
+        // GET через прокси-пул (fallback-путь; ЦБ/гекко обычно идут напрямую — CORS: *)
+        async function viaProxy(url) {
             let lastErr;
-            for (let attempt = 0; attempt < 4; attempt++) {
-                const proxy = pool[attempt % pool.length];
+            for (let attempt = 0; attempt < 3; attempt++) {
+                const proxy = GET_PROXIES[attempt % GET_PROXIES.length];
                 try {
-                    const r = await fetch(proxy + encodeURIComponent(url), opts);
+                    const r = await fetchT(proxy + encodeURIComponent(url));
                     if (!r.ok) throw new Error('HTTP ' + r.status);
                     return await r.json();
                 } catch (e) {
                     lastErr = e;
-                    // rate-limit / CF-challenge / сеть — ждём с экспонентой и пробуем снова
-                    await sleep(700 * Math.pow(2, attempt) + Math.random() * 300);
+                    await sleep(600 * Math.pow(2, attempt));
                 }
             }
             throw lastErr || new Error('CORS-прокси недоступен');
+        }
+        // прямой GET (ЦБ/CoinGecko отдают Access-Control-Allow-Origin: *), прокси только как fallback
+        async function getJson(url) {
+            try {
+                const r = await fetchT(url);
+                if (!r.ok) throw new Error('HTTP ' + r.status);
+                return await r.json();
+            } catch (e) { return viaProxy(url); }
         }
         // ---------- rate cache (ЦБ + CoinGecko) ----------
         function readRateCache() {
@@ -965,22 +983,34 @@
             const cached = readRateCache();
             if (cached) { state.cbrRate = cached.cbr; state.usdtPrice = cached.usdt || 1; return; }
             try {
-                const cbr = await viaProxy('https://www.cbr-xml-daily.ru/daily_json.js');
+                const cbr = await getJson('https://www.cbr-xml-daily.ru/daily_json.js');
                 state.cbrRate = Number(cbr.Valute.USD.Value) || 0;
             } catch (e) { state.error = 'ЦБ недоступен: ' + e.message; }
             try {
-                const cg = await viaProxy('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
+                const cg = await getJson('https://api.coingecko.com/api/v3/simple/price?ids=tether&vs_currencies=usd');
                 state.usdtPrice = Number(cg.tether.usd) || 1;
             } catch (e) { state.usdtPrice = 1; }
             if (state.cbrRate > 0) writeRateCache();
         }
         async function fetchBybitPage(page) {
-            const body = { tokenId: 'USDT', currencyId: 'RUB', payment: ['14'], side: '0', size: '30', page: String(page), amount: '' };
-            const data = await viaProxy(BYBIT_URL, {
-                method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
-            });
-            if (data.ret_code !== 0) throw new Error('bybit ret_code=' + data.ret_code);
-            return data.result && data.result.items || [];
+            const body = JSON.stringify({ tokenId: 'USDT', currencyId: 'RUB', payment: ['14'], side: '0', size: '30', page: String(page), amount: '' });
+            const opts = { method: 'POST', headers: { 'Content-Type': 'application/json' }, body };
+            let lastErr;
+            // попытки 0-1 → свой endpoint, 2-3 → corsproxy fallback
+            for (let attempt = 0; attempt < 4; attempt++) {
+                const ep = BYBIT_ENDPOINTS[Math.min(Math.floor(attempt / 2), BYBIT_ENDPOINTS.length - 1)];
+                try {
+                    const r = await fetchT(ep.wrap ? ep.url + encodeURIComponent(BYBIT_URL) : ep.url, opts);
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    const data = await r.json();
+                    if (data.ret_code !== 0) throw new Error('bybit ret_code=' + data.ret_code);
+                    return data.result && data.result.items || [];
+                } catch (e) {
+                    lastErr = e;
+                    await sleep(500 * Math.pow(2, attempt));
+                }
+            }
+            throw lastErr;
         }
         function refreshOffers() {
             state.offers = Array.from(byUser.values()).sort((a, b) => parseFloat(b.price) - parseFloat(a.price));
@@ -1034,17 +1064,20 @@
                     refreshOffers();
                     renderProgress();
                     if (results.every(r => r.status === 'rejected')) {
-                        // вся волна упала (rate-limit) — вернуть страницы в очередь и подождать, не бросать скан
+                        // вся волна упала (сеть/лимит) — вернуть страницы в очередь и подождать, не бросать скан
                         nextPage = pages[0];
                         waveFails++;
                         if (waveFails >= 3) {
-                            state.error = 'corsproxy.io лимитит запросы — подожди 20–30 сек и нажми «Обновить»';
+                            state.error = 'Bybit-прокси не отвечает — подожди 20–30 сек и нажми «Обновить»';
                             break;
                         }
+                        state.netNote = 'сеть икает — пауза и ретрай ' + waveFails + '/3…';
+                        renderProgress();
                         await sleep(4000 * waveFails);
                         continue;
                     }
                     waveFails = 0;
+                    state.netNote = null;
                     state.error = null; // связь восстановилась
                     if (anyEmpty) { done = true; break; }
                     const fair = cbrFairRate();
@@ -1089,9 +1122,10 @@
                 let eta = 0;
                 if (p.page) { const el2 = Date.now() - p.startedAt; eta = Math.round((Math.max(0, p.totalPages - p.page) * (el2 / p.page)) / 1000); }
                 $('progress-meta').innerHTML = 'Страница <strong>' + p.page + '</strong> из ' + p.totalPages +
-                    ' · найдено <strong style="color:var(--emerald)">' + p.itemsFound + '</strong> офферов' + (eta ? ' · ~' + eta + ' сек' : '');
+                    ' · найдено <strong style="color:var(--emerald)">' + p.itemsFound + '</strong> офферов' + (eta ? ' · ~' + eta + ' сек' : '') +
+                    (state.netNote ? ' · <span style="color:var(--amber)">' + state.netNote + '</span>' : '');
             } else {
-                $('progress-meta').textContent = 'инициализация…';
+                $('progress-meta').textContent = state.netNote || 'инициализация…';
             }
         }
 
