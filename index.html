@@ -565,19 +565,18 @@
     (function () {
         'use strict';
         const $ = id => document.getElementById(id);
-        // CORS proxy pool — tried in order, first working one is remembered for the session.
-        // Single-proxy dependency was a hard SPOF (corsproxy.io rate-limits / occasional 5xx).
-        const CORS_PROXIES = [
-            'https://corsproxy.io/?url=',
-            'https://api.allorigins.win/raw?url=',
-            'https://thingproxy.freeboard.io/fetch/',
-        ];
-        let corsIdx = 0;
-        const wrapProxy = (url) => CORS_PROXIES[corsIdx] + encodeURIComponent(url);
+        // Bybit item/online принимает ТОЛЬКО POST. Из публичных CORS-прокси POST реально умеет
+        // только corsproxy.io (allorigins = 500 на POST, thingproxy/codetabs — мертвы; проверено curl 2026-07-06).
+        // Поэтому: POST = один прокси + retry с backoff (НЕ пул мёртвых), GET (ЦБ/CoinGecko) = с fallback.
+        const POST_PROXIES = ['https://corsproxy.io/?url='];
+        const GET_PROXIES = ['https://corsproxy.io/?url=', 'https://api.allorigins.win/raw?url='];
+        const sleep = ms => new Promise(r => setTimeout(r, ms));
         const BYBIT_URL = 'https://api2.bybit.com/fiat/otc/item/online';
         const PAGE_SIZE = 10;
         const BYBIT_MAX_PAGES = 200;
-        const FETCH_BATCH = 6;          // pages fetched concurrently per wave
+        const FETCH_BATCH = 3;          // pages per wave — 6 параллельных ловили rate-limit corsproxy → Failed to fetch
+        const STAGGER_MS = 250;         // разнос запросов внутри волны
+        const WAVE_GAP_MS = 350;        // пауза между волнами
         const RATE_CACHE_KEY = 'fs_p2p_rate_cache';
         const RATE_CACHE_TTL = 10 * 60 * 1000;   // 10 min
         const LAST_OFFERS_KEY = 'fs_p2p_last_offers';
@@ -610,12 +609,17 @@
         let loadingPages = false;
 
         const cbrFairRate = () => state.cbrRate * state.usdtPrice;
+        // страницы Bybit идут от ДОРОГИХ к дешёвым → пока скан неглубокий, в state.offers один
+        // верх стакана (грязные) и «медиана» врёт на +10%. Не считаем её до достаточной глубины.
+        const scanDepthOk = () => done || state.offers.length >= 40;
         const marketRate = () => {
+            if (!scanDepthOk()) return 0;
             const p = state.offers.map(o => parseFloat(o.price)).filter(n => n > 0).sort((a, b) => a - b);
             return p.length ? p[Math.floor(p.length / 2)] : 0;
         };
         // lower quartile of accessible offers — self-calibrating "clean clearing" price
         const q1Rate = () => {
+            if (!scanDepthOk()) return 0;
             const p = state.offers.filter(isAccessible).map(o => parseFloat(o.price)).filter(n => n > 0).sort((a, b) => a - b);
             return p.length ? p[Math.floor(p.length * 0.25)] : 0;
         };
@@ -626,7 +630,7 @@
             if (c && m) return Math.min(c, m);
             return c || m;
         };
-        const anchorRate = () => state.anchor === 'cbr' ? cbrFairRate() : marketRate();
+        const anchorRate = () => state.anchor === 'cbr' ? cbrFairRate() : (marketRate() || cbrFairRate());
         const anchorLabel = () => state.anchor === 'cbr' ? 'ЦБ × USDT' : 'P2P медиана';
 
         // ---------- seller history (localStorage — replaces server snapshotter) ----------
@@ -927,20 +931,24 @@
         }
         function best() { return bestSafe() || bestOverall(); }
 
-        // ---------- fetch (multi-proxy fallback) ----------
+        // ---------- fetch (retry + backoff; POST только через corsproxy.io) ----------
         async function viaProxy(url, opts) {
+            const isPost = opts && opts.method === 'POST';
+            const pool = isPost ? POST_PROXIES : GET_PROXIES;
             let lastErr;
-            for (let attempt = 0; attempt < CORS_PROXIES.length; attempt++) {
-                const idx = (corsIdx + attempt) % CORS_PROXIES.length;
+            for (let attempt = 0; attempt < 4; attempt++) {
+                const proxy = pool[attempt % pool.length];
                 try {
-                    const r = await fetch(CORS_PROXIES[idx] + encodeURIComponent(url), opts);
+                    const r = await fetch(proxy + encodeURIComponent(url), opts);
                     if (!r.ok) throw new Error('HTTP ' + r.status);
-                    const data = await r.json();
-                    corsIdx = idx; // remember the working proxy
-                    return data;
-                } catch (e) { lastErr = e; }
+                    return await r.json();
+                } catch (e) {
+                    lastErr = e;
+                    // rate-limit / CF-challenge / сеть — ждём с экспонентой и пробуем снова
+                    await sleep(700 * Math.pow(2, attempt) + Math.random() * 300);
+                }
             }
-            throw lastErr || new Error('все CORS-прокси недоступны');
+            throw lastErr || new Error('CORS-прокси недоступен');
         }
         // ---------- rate cache (ЦБ + CoinGecko) ----------
         function readRateCache() {
@@ -980,12 +988,15 @@
         }
         // instant-render: persist / restore last offer set so the page shows something on open
         function persistLastOffers() {
-            try { localStorage.setItem(LAST_OFFERS_KEY, JSON.stringify({ ts: Date.now(), offers: state.offers.slice(0, 120) })); } catch (e) {}
+            // ВЕСЬ список (после dedup это 100-400 записей): offers отсортированы price DESC,
+            // slice(0,N) отрезал бы чистый низ стакана и кэш состоял бы из одних грязных
+            try { localStorage.setItem(LAST_OFFERS_KEY, JSON.stringify({ ts: Date.now(), offers: state.offers })); } catch (e) {}
         }
         function loadLastOffers() {
             try {
                 const c = JSON.parse(localStorage.getItem(LAST_OFFERS_KEY) || 'null');
-                if (c && Array.isArray(c.offers) && c.offers.length) return c;
+                // ≥50 офферов и не старше 12ч — иначе это обрывок верха стакана / протухший снимок
+                if (c && Array.isArray(c.offers) && c.offers.length >= 50 && (Date.now() - c.ts) < 12 * 3600 * 1000) return c;
             } catch (e) {}
             return null;
         }
@@ -995,16 +1006,17 @@
             state.poll.active = true;
             if (!state.poll.startedAt) state.poll.startedAt = Date.now();
             const before = safeOffers().length;
+            let waveFails = 0;
             try {
                 while (!done && (safeOffers().length - before) < needNewSafe && nextPage <= BYBIT_MAX_PAGES) {
-                    // fetch a wave of pages concurrently — ~FETCH_BATCH× faster than sequential
+                    // волна из FETCH_BATCH страниц со stagger'ом — быстрее последовательного, не ловит rate-limit
                     const pages = [];
                     for (let i = 0; i < FETCH_BATCH && nextPage <= BYBIT_MAX_PAGES; i++) pages.push(nextPage++);
-                    const results = await Promise.allSettled(pages.map(fetchBybitPage));
-                    let anyEmpty = false, batchMinPrice = Infinity, hardErr = null;
+                    const results = await Promise.allSettled(pages.map((pg, i) => sleep(i * STAGGER_MS).then(() => fetchBybitPage(pg))));
+                    let anyEmpty = false, batchMinPrice = Infinity;
                     results.forEach((res, i) => {
                         if (pages[i] > state.poll.page) state.poll.page = pages[i];
-                        if (res.status !== 'fulfilled') { hardErr = res.reason; return; }
+                        if (res.status !== 'fulfilled') return;
                         const items = res.value;
                         if (items.length === 0) { anyEmpty = true; return; }
                         for (const it of items) {
@@ -1021,10 +1033,23 @@
                     state.poll.itemsFound = byUser.size;
                     refreshOffers();
                     renderProgress();
-                    if (results.every(r => r.status === 'rejected') && hardErr) throw hardErr;
+                    if (results.every(r => r.status === 'rejected')) {
+                        // вся волна упала (rate-limit) — вернуть страницы в очередь и подождать, не бросать скан
+                        nextPage = pages[0];
+                        waveFails++;
+                        if (waveFails >= 3) {
+                            state.error = 'corsproxy.io лимитит запросы — подожди 20–30 сек и нажми «Обновить»';
+                            break;
+                        }
+                        await sleep(4000 * waveFails);
+                        continue;
+                    }
+                    waveFails = 0;
+                    state.error = null; // связь восстановилась
                     if (anyEmpty) { done = true; break; }
                     const fair = cbrFairRate();
-                    if (fair && batchMinPrice < fair * 0.93) { done = true; break; } // offers dropped below discount floor
+                    if (fair && batchMinPrice < fair * 0.93) { done = true; break; } // ушли ниже пола скидок
+                    await sleep(WAVE_GAP_MS);
                 }
                 if (nextPage > BYBIT_MAX_PAGES) done = true;
             } catch (e) {
@@ -1032,7 +1057,8 @@
             } finally {
                 state.poll.active = false;
                 loadingPages = false;
-                if (state.offers.length) persistLastOffers();
+                // не персистим обрывок верха стакана (одни грязные) — только полноценный скан
+                if (done || state.offers.length >= 50) persistLastOffers();
             }
         }
 
@@ -1076,11 +1102,20 @@
                 return;
             }
             const tier = classify(b);
+            const unsafe = tier === 'dirty' || tier === 'suspicious';
             const tierColor = tier === 'clean' ? 'var(--emerald)' : 'var(--amber)';
-            const eyebrow = tier === 'clean' ? 'Лучший чистый оффер' : tier === 'acceptable' ? 'Лучший допустимый (впритык к ЦБ, чистых нет)' : 'Безопасных нет — лучший доступный';
+            const eyebrow = tier === 'clean' ? 'Лучший чистый оффер' : tier === 'acceptable' ? 'Лучший допустимый (впритык к ЦБ, чистых нет)' :
+                (done ? 'Безопасных нет — только верх стакана' : 'Скан не дошёл до чистой зоны');
             const aRate = anchorRate();
             const dPct = aRate ? devPct(b, aRate) : 0;
-            const ctaCls = tier === 'clean' ? 'clean' : tier === 'acceptable' ? 'acceptable' : 'warnclr';
+            const ctaCls = tier === 'clean' ? 'clean' : 'acceptable';
+            // НИКОГДА не даём кнопку «Продать» на dirty/suspicious — обрыв скана показывал
+            // грязный 81₽ с оранжевой CTA (инцидент 2026-07-06)
+            const cta = unsafe
+                ? '<div class="empty rose" style="margin-top:14px">Продавать по этому курсу опасно — он выше эталона. ' +
+                  (done ? 'Сейчас чистых офферов на рынке нет.' : 'Скан оборвался на дорогих офферах.') +
+                  ' <button class="refresh-btn" id="best-retry" style="margin-left:6px">' + (done ? 'Обновить' : 'Дозагрузить') + '</button></div>'
+                : '<a class="best-cta ' + ctaCls + '" href="' + profileUrl(b) + '" target="_blank" rel="noopener">Продать USDT →</a>';
             $('best-content').innerHTML =
                 '<div class="best-eyebrow" style="color:' + tierColor + '">' + eyebrow +
                     ' <span class="badge ' + TIER_META[tier].cls + '">' + TIER_META[tier].label + '</span></div>' +
@@ -1090,8 +1125,9 @@
                 '<div class="best-chips">' +
                     (aRate ? '<span class="pillbadge ' + devCls(dPct) + '">' + (dPct >= 0 ? '+' : '') + dPct.toFixed(2) + '% от ' + (state.anchor === 'cbr' ? 'ЦБ' : 'медианы') + '</span>' : '') +
                     '<span class="pillbadge ' + trustCls(trustScore(b)) + '">' + trustScore(b) + '/100</span>' +
-                '</div>' + tagsHtml(b) +
-                '<a class="best-cta ' + ctaCls + '" href="' + profileUrl(b) + '" target="_blank" rel="noopener">Продать USDT →</a>';
+                '</div>' + tagsHtml(b) + cta;
+            const retryBtn = $('best-retry');
+            if (retryBtn) retryBtn.onclick = () => { retryBtn.disabled = true; (done ? manualRefresh() : loadMoreSafe()); };
         }
 
         function renderAnchor() {
@@ -1359,9 +1395,10 @@
             renderProgress();
             $('progress').classList.toggle('hidden', !(state.loading && !state.offers.length));
             $('best-content').classList.toggle('hidden', !(!state.loading || state.offers.length));
-            if (state.error && !state.offers.length) {
-                $('best-error').classList.remove('hidden'); $('best-error').textContent = 'Ошибка: ' + state.error;
-                $('progress').classList.add('hidden');
+            if (state.error) {
+                $('best-error').classList.remove('hidden');
+                $('best-error').textContent = (state.offers.length ? 'Скан оборвался: ' : 'Ошибка: ') + state.error;
+                if (!state.offers.length) $('progress').classList.add('hidden');
             } else $('best-error').classList.add('hidden');
 
             if (state.offers.length || !state.loading) {
