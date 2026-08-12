@@ -686,11 +686,21 @@
             } catch (e) { /* offline / feed down — local history still works */ }
         }
 
+        // Bybit с августа 2026 отдаёт userId = "0" и accountId = "0" У ВСЕХ офферов (анонимизация).
+        // Dedup по userId схлопывал весь стакан в ОДНУ запись (map size 1, каждая след. страница
+        // перезаписывала её более дешёвым оффером) → «найдено 1 офферов» на 50-й странице.
+        // Стабильный per-merchant ключ = userMaskId (он же используется в ссылке на профиль).
+        function merchantKey(o) {
+            if (o.userMaskId) return o.userMaskId;
+            if (o.userId && String(o.userId) !== '0') return String(o.userId);
+            return o.nickName ? 'nick:' + o.nickName : 'ad:' + o.id;
+        }
+
         // record current pass into history (cross-visit accumulation)
         function recordSnapshot(offers) {
             const now = Date.now();
             for (const o of offers) {
-                const uid = o.userId;
+                const uid = merchantKey(o);
                 const fin = Number(o.finishNum) || 0;
                 const nick = o.nickName || null;
                 let h = history[uid];
@@ -712,7 +722,7 @@
 
         // derive SellerHistory-like object for an offer
         function histFor(o) {
-            const h = history[o.userId];
+            const h = history[merchantKey(o)];
             if (!h) return { known: false };
             const now = Date.now();
             const daysObserved = Math.floor((now - h.fs) / 86400000);
@@ -728,7 +738,7 @@
 
         // bait info from CURRENT pass (ad_count + price spread for this seller)
         function baitFor(o) {
-            const plist = pricesByUser.get(o.userId) || [];
+            const plist = pricesByUser.get(merchantKey(o)) || [];
             if (plist.length < 2) return { ad_count: plist.length, min_price: plist[0] || null, max_price: plist[0] || null, bait_spread_pct: null, bait_detected: false };
             const min = Math.min(...plist), max = Math.max(...plist);
             const spread = min > 0 ? ((max - min) / min) * 100 : 0;
@@ -1051,14 +1061,15 @@
                         const items = res.value;
                         if (items.length === 0) { anyEmpty = true; return; }
                         for (const it of items) {
+                            const key = merchantKey(it);
                             const p = parseFloat(it.price);
                             if (isFinite(p) && p > 0) {
-                                const arr = pricesByUser.get(it.userId) || [];
-                                arr.push(p); pricesByUser.set(it.userId, arr);
+                                const arr = pricesByUser.get(key) || [];
+                                arr.push(p); pricesByUser.set(key, arr);
                                 if (p < batchMinPrice) batchMinPrice = p;
                             }
-                            const prev = byUser.get(it.userId);
-                            if (!prev || p < parseFloat(prev.price)) byUser.set(it.userId, it);
+                            const prev = byUser.get(key);
+                            if (!prev || p < parseFloat(prev.price)) byUser.set(key, it);
                         }
                     });
                     state.poll.itemsFound = byUser.size;
@@ -1550,7 +1561,7 @@
             if (last) {
                 state.offers = last.offers;
                 state.updatedAt = last.ts;
-                for (const o of state.offers) { const p = parseFloat(o.price); if (isFinite(p) && p > 0) pricesByUser.set(o.userId, [p]); }
+                for (const o of state.offers) { const p = parseFloat(o.price); if (isFinite(p) && p > 0) pricesByUser.set(merchantKey(o), [p]); }
             }
             render();
             await Promise.all([fetchFairRate(), fetchRemoteHistory()]);
