@@ -62,7 +62,8 @@ async function main() {
         scanned += items.length;
 
         for (const o of items) {
-            const uid = o.userId;
+            // Bybit с августа 2026 отдаёт userId = "0" у всех офферов → ключ мерчанта = userMaskId
+            const uid = o.userMaskId || (o.userId && String(o.userId) !== '0' ? String(o.userId) : null);
             if (!uid) continue;
             const fin = Number(o.finishNum) || 0;
             const nick = o.nickName || null;
